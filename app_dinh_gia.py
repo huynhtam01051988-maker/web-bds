@@ -11,7 +11,7 @@ import json
 from bs4 import BeautifulSoup
 from PIL import Image
 
-st.set_page_config(page_title="Hệ Thống BĐS - Team Tâm", layout="wide", page_icon="🏘️")
+st.set_page_config(page_title="Hệ Thống BĐS - Anh Em Cùng Tiến", layout="wide", page_icon="🏘️")
 
 # Cấu hình API Key thật của sếp
 genai.configure(api_key="AIzaSyC6kbRKIURiwbmLqeztv9Un9tU5PrdZeTo")
@@ -155,8 +155,8 @@ def fetch_mogi(keyword):
     except Exception:
         return []
 
-st.title("🤖 HỆ THỐNG ĐIỀU PHỐI & ĐỊNH GIÁ BĐS CHUYÊN NGHIỆP")
-st.markdown("*Công cụ tối thượng dành riêng cho Team 4 người của Sếp Tâm*")
+st.title("🤖 HỆ THỐNG ĐIỀU PHỐI & ĐỊNH GIÁ BĐS - ANH EM CÙNG TIẾN")
+st.markdown("*Công cụ tối thượng dành riêng cho Hội **Anh Em Cùng Tiến** (Tâm - Dinh - Việt - Phát)*")
 st.markdown("---")
 
 tab_dinh_gia, tab_quy_hoach, tab_quan_ly = st.tabs(["📊 1. LÕI AI ĐỊNH GIÁ", "🗺️ 2. SOI QUY HOẠCH", "🤝 3. QUẢN LÝ TEAM (CRM)"])
