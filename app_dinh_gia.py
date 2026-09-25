@@ -20,10 +20,12 @@ st.set_page_config(page_title="Hệ Thống BĐS - Anh Em Cùng Tiến", layout=
 # Cấu hình API Key thật của sếp (Đã chuyển lên trên)
 
 def analyze_images(uploaded_files):
-    prompt_text = """Đóng vai một chuyên gia thẩm định giá bất động sản. Nhìn ảnh và trả lời 3 gạch đầu dòng ngắn gọn:
-1. Đánh giá độ mới, hiện trạng kết cấu.
-2. Nêu 2 Ưu điểm ngoại quan.
-3. Chỉ ra 2 Nhược điểm (lỗi phong thủy, hỏng hóc) để làm cớ ép giá."""
+    prompt_text = """Đóng vai một Siêu Cò Bất Động Sản kiêm Chuyên gia Thẩm định giá lão luyện. 
+Hãy soi thật kỹ các bức ảnh này và đưa ra 1 Bản Phân Tích Thật Sâu Sắc, Chi Tiết để dân trong nghề đi chốt khách:
+1. 🏠 KIẾN TRÚC & HIỆN TRẠNG: Đánh giá chi tiết kết cấu, mức độ xuống cấp, có cần đập đi xây lại không? (Nếu là nhà tạm/cấp 4 thì nhấn mạnh chỉ tính giá đất).
+2. 💎 ĐIỂM ĂN TIỀN (ĐỂ CHỐT SALE): Moi móc bằng được những ưu điểm vượt trội (Vị trí, mặt tiền, hẻm xe hơi, khả năng cho thuê tạo dòng tiền, hạ tầng).
+3. 🚨 TỬ HUYỆT (ĐỂ ÉP GIÁ CHỦ NHÀ): Bới lông tìm vết từng lỗi nhỏ nhất (Lỗi phong thủy như cột điện, đâm đường, tóp hậu, hoặc rủi ro quy hoạch lộ giới, ồn ào...).
+Trả lời bằng giọng điệu dân cò đất thực chiến, sắc bén và thuyết phục."""
     
     contents = [prompt_text]
     for f in uploaded_files:
