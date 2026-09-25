@@ -15,6 +15,8 @@ import json
 from bs4 import BeautifulSoup
 from PIL import Image
 
+FIREBASE_URL = "https://khobds-2026-default-rtdb.firebaseio.com"
+
 st.set_page_config(page_title="Hệ Thống BĐS - Anh Em Cùng Tiến", layout="wide", page_icon="🏘️")
 
 # Cấu hình API Key thật của sếp (Đã chuyển lên trên)
@@ -301,7 +303,7 @@ with tab_quan_ly:
     st.markdown("---")
     
     # KHỞI TẠO CẤU HÌNH FIREBASE CLOUD VÀ CATBOX
-    FIREBASE_URL = "https://khobds-2026-default-rtdb.firebaseio.com"
+    # Removed redundant FIREBASE_URL definition
     
     def upload_to_catbox(file_bytes, filename):
         try:
