@@ -62,9 +62,12 @@ def fetch_chotot(keyword):
                 body = ad.get('body', '').lower()
                 price = ad.get('price', 0) / 1_000_000_000 
                 area = ad.get('size', 0)
-                # Lọc giá >= 0.5 Tỷ để chắc chắn không vớt nhầm nhà cho thuê
-                if price < 0.5:
+                
+                # BỘ LỌC THÉP: Loại bỏ Chung cư / Căn hộ và Giá thuê rẻ
+                title_lower = title.lower()
+                if price < 0.5 or "chung cư" in title_lower or "căn hộ" in title_lower or "apartment" in title_lower:
                     continue
+                    
                 link = f"https://nha.chotot.com/mua-ban-nha-dat/{ad.get('list_id', '')}.htm"
                 
                 phap_ly = "Sổ hồng"
@@ -107,6 +110,12 @@ def fetch_mogi(keyword):
             if not (title_el and price_el and link_el and attr_ul): continue
             
             title = title_el.text.strip()
+            
+            # BỘ LỌC THÉP: Loại bỏ Chung cư / Căn hộ
+            title_lower = title.lower()
+            if "chung cư" in title_lower or "căn hộ" in title_lower or "apartment" in title_lower:
+                continue
+                
             link = link_el['href']
             
             price_str = price_el.text.strip().lower()
