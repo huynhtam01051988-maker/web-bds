@@ -49,8 +49,8 @@ Trả lời bằng giọng điệu dân cò đất thực chiến, sắc bén v�
 def fetch_chotot(keyword):
     try:
         encoded_kw = urllib.parse.quote(keyword)
-        # cg=1010 chuyên trang Mua Bán (loại trừ mục Cho Thuê)
-        url = f"https://gateway.chotot.com/v1/public/ad-listing?cg=1010&q={encoded_kw}&limit=5"
+        # cg=1020 chuyên trang Nhà Ở (Nhà Phố)
+        url = f"https://gateway.chotot.com/v1/public/ad-listing?cg=1020&q={encoded_kw}&limit=5"
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         res = requests.get(url, headers=headers, timeout=5)
         
