@@ -159,7 +159,7 @@ st.title("🤖 HỆ THỐNG ĐIỀU PHỐI & ĐỊNH GIÁ BĐS - ANH EM CÙNG TI
 st.markdown("*Công cụ tối thượng dành riêng cho Hội **Anh Em Cùng Tiến** (Tâm - Dinh - Việt - Phát)*")
 st.markdown("---")
 
-tab_dinh_gia, tab_quy_hoach, tab_quan_ly = st.tabs(["📊 1. LÕI AI ĐỊNH GIÁ", "🗺️ 2. SOI QUY HOẠCH", "🤝 3. QUẢN LÝ TEAM (CRM)"])
+tab_dinh_gia, tab_quy_hoach, tab_quan_ly, tab_phap_ly = st.tabs(["📊 1. LÕI AI ĐỊNH GIÁ", "🗺️ 2. SOI QUY HOẠCH", "🤝 3. QUẢN LÝ TEAM (CRM)", "⚖️ 4. QUY TRÌNH & PHÁP LÝ"])
 
 with tab_dinh_gia:
     col1, col2 = st.columns([1, 1.5])
@@ -545,3 +545,37 @@ Yêu cầu thêm:
                         st.rerun()
                     except AttributeError:
                         st.experimental_rerun()
+
+# --- TAB 4: QUY TRÌNH & PHÁP LÝ ---
+with tab_phap_ly:
+    st.header("⚖️ CẨM NANG PHÁP LÝ & QUY TRÌNH GIAO DỊCH (CẬP NHẬT LUẬT MỚI 2024)")
+    st.markdown("---")
+    
+    colA, colB = st.columns(2)
+    with colA:
+        st.subheader("✅ QUY TRÌNH GIAO DỊCH CHUẨN A-Z")
+        with st.expander("BƯỚC 1: Ký Hợp đồng Đặt Cọc", expanded=True):
+            st.markdown("""
+**Thao tác:** Bên Mua xuống tiền cọc. Hai bên ký Giấy nhận cọc, chốt thời hạn ra Công chứng.  
+**Quan trọng:** Phải chốt RÕ RÀNG ai là người đóng Thuế TNCN (2%), Lệ phí trước bạ (0.5%) và Phí sang tên sổ (Tức là thỏa thuận có 'Bao sổ' hay không).
+            """)
+        with st.expander("BƯỚC 2: Công chứng Hợp đồng (HĐCN)"):
+            st.markdown("""
+**Thao tác:** Hai bên ra Văn phòng Công chứng lăn tay, ký tên. Bên Bán giao toàn bộ Sổ hồng bản gốc và giấy tờ cho bên Mua.  
+**Thanh toán:** Bên Mua giao nốt phần tiền còn lại (thường giữ lại khoảng 5-10% chờ lấy sổ mới đưa hết).
+            """)
+        with st.expander("BƯỚC 3 & 4: Khai Thuế và Đăng bộ Sang tên"):
+            st.markdown("""
+- **Khai thuế:** Nộp hồ sơ tại Bộ phận Một cửa cấp Quận/Huyện trong vòng 30 ngày. 
+- **Đóng thuế:** 
+  - *Bên Bán (Người bán):* Đóng Thuế TNCN **2%** (Dựa trên giá Hợp đồng hoặc giá Nhà nước mới cập nhật 2024). Được miễn nếu là tài sản duy nhất.
+  - *Bên Mua (Người mua):* Đóng Lệ phí trước bạ **0.5%** + vài trăm ngàn lệ phí cấp sổ.
+- **Sang tên:** Đóng biên lai thuế xong, nộp lại cho Một cửa. Đợi 14-21 ngày lấy Sổ hồng mới!
+            """)
+
+    with colB:
+        st.subheader("🚨 4 CÁI BẪY CHẾT NGƯỜI (CẦN NÉ GẤP)")
+        st.error("**BẪY 1: Khai '2 Giá' (Trốn thuế)**\n\nLuật Đất Đai 2024 đã áp dụng Bảng giá sát thị trường. Khai giá ảo trên HĐ Công chứng không né được thuế mà còn nguy cơ bị khởi tố hình sự tội Trốn Thuế. Khách hàng cũng có thể lật kèo chỉ trả đúng số tiền ghi trên HĐ.")
+        st.error("**BẪY 2: Môi giới tự nhận cọc giùm**\n\nTuyệt đối KHÔNG cầm tiền cọc của khách thay chủ nhà nếu không có HĐ Ủy Quyền hợp pháp. Nếu chủ nhà lật kèo không bán, Môi giới sẽ dính tội 'Lừa đảo chiếm đoạt tài sản'. Tiền cọc phải bank thẳng cho Chủ.")
+        st.error("**BẪY 3: Lướt sóng bằng HĐ 'Ủy quyền toàn quyền'**\n\nHiện cơ quan thuế đánh Thuế TNCN 2 LẦN (4%) nếu dùng HĐ Ủy quyền mang đi bán. Ngoài ra, nếu Chủ nhà (Người ủy quyền) MẤT năng lực hành vi hoặc QUA ĐỜI, HĐ Ủy quyền tự động vô hiệu -> Khách hàng Mất Trắng nhà!")
+        st.error("**BẪY 4: 'Kênh Giá' thay vì nhận Hoa Hồng**\n\nChủ gửi 5 tỷ, kê lên 5.5 tỷ để ăn khúc giữa là ĐIỀU TỐI KỴ. Luật KD BĐS 2023 cấm cò mồi hoạt động kiểu này. Phải minh bạch giá thật 100% với cả 2 bên và nhận Hoa hồng đúng Hợp Đồng Môi Giới.")
