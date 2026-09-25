@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import time
 import requests
 import urllib.parse
@@ -39,7 +39,7 @@ def analyze_images(uploaded_files):
         except Exception:
             pass
     
-    models_to_try = ['gemini-flash-latest', 'gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3.5-flash-lite']
+    models_to_try = ['gemini-flash-latest', 'gemini-1.5-flash', 'gemini-3.1-pro-preview', 'gemini-1.5-flash-lite']
     last_error = ""
     
     for model_name in models_to_try:
@@ -377,7 +377,7 @@ Tin nhắn:
   "phaply_gia": "Pháp lý (sổ hồng...) và Giá bán"
 }}"""
                     try:
-                        model = genai.GenerativeModel('gemini-3.5-flash')
+                        model = genai.GenerativeModel('gemini-1.5-flash')
                         res = model.generate_content(prompt_parse)
                         import re
                         json_str = res.text
@@ -521,7 +521,7 @@ Yêu cầu thêm:
 - Không dài lê thê, súc tích và đấm thẳng vào tâm lý người mua!
 """
                         try:
-                            model = genai.GenerativeModel('gemini-3.5-flash')
+                            model = genai.GenerativeModel('gemini-1.5-flash')
                             response = model.generate_content(prompt)
                             generated_text = response.text
                         except:
@@ -650,7 +650,7 @@ with tab_dao_tao:
 Bạn là một Siêu Môi Giới BĐS. Hãy đưa ra 1 câu trả lời CỰC KỲ KHÉO LÉO, mềm mỏng nhưng thuyết phục để hóa giải lời chê này, xoay chuyển tình thế biến nhược điểm thành ưu điểm (hoặc đánh lạc hướng sang ưu điểm khác của nhà như giá rẻ, an ninh...).
 Viết theo văn phong nhắn tin Zalo, ngắn gọn, thân thiện, dùng biểu tượng cảm xúc.'''
                 try:
-                    model = genai.GenerativeModel('gemini-3.5-flash')
+                    model = genai.GenerativeModel('gemini-1.5-flash')
                     response = model.generate_content(prompt)
                     st.success("**Copy đoạn này gửi lại cho khách ngay:**")
                     st.write(response.text)
