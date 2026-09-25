@@ -182,6 +182,14 @@ with tab_dinh_gia:
                         with st.spinner("🧠 AI đang quét từng chi tiết trong ảnh..."):
                             ai_analysis = analyze_images(uploaded_files)
                             st.info(ai_analysis)
+                            # AUTO-SAVE TỰ ĐỘNG
+                            try:
+                                ts = int(time.time())
+                                req_data = {"time": ts, "address": dia_chi, "analysis": ai_analysis}
+                                requests.put(f"{FIREBASE_URL}/ai_reports/{ts}.json", json=req_data)
+                                st.toast("✅ Đã tự động lưu Báo cáo phân tích vào Lịch sử!")
+                            except:
+                                pass
                     else:
                         st.warning("⚠️ Không có ảnh. Hệ thống bỏ qua bước soi lỗi nhà.")
                         
@@ -236,6 +244,29 @@ with tab_dinh_gia:
                             st.success(f"✅ **Chiến lược:** Chủ rao sát giá thị trường. Chốt hạ quanh mốc **{gia_tri_thuc:.1f} Tỷ**.")
                     else:
                         st.info(f"💡 Ném giá mồi ở mức **{gia_tri_thuc - 0.4:.1f} Tỷ** xem thái độ chủ nhà.")
+
+    st.markdown("---")
+    with st.expander("📚 LỊCH SỬ PHÂN TÍCH HÌNH ẢNH (AUTO-SAVED)", expanded=False):
+        try:
+            res_rep = requests.get(f"{FIREBASE_URL}/ai_reports.json").json()
+            if res_rep:
+                for k, v in res_rep.items():
+                    col_rp1, col_rp2 = st.columns([4, 1])
+                    with col_rp1:
+                        st.markdown(f"**🏠 Địa chỉ: {v.get('address', 'Không tên')}**")
+                    with col_rp2:
+                        if st.button("🗑️ Xóa", key=f"del_rep_{k}"):
+                            requests.delete(f"{FIREBASE_URL}/ai_reports/{k}.json")
+                            try:
+                                st.rerun()
+                            except:
+                                st.experimental_rerun()
+                    st.write(v.get('analysis', ''))
+                    st.markdown("---")
+            else:
+                st.write("Chưa có báo cáo nào được lưu.")
+        except:
+            st.write("Chưa có báo cáo nào được lưu.")
 
 with tab_quy_hoach:
     st.header("🗺️ CỔNG TRA CỨU QUY HOẠCH CHÍNH THỨC (TP.HCM)")
