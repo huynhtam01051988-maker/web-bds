@@ -41,18 +41,20 @@ Trả lời bằng giọng điệu dân cò đất thực chiến, sắc bén v�
             pass
             
     try:
-        # Cơ chế dự phòng: Thử các đời chip khác nhau nếu server bị nghẽn
-        models_to_try = ["gemini-3.5-flash", "gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+        # Cơ chế dự phòng: Thử các đời chip từ mới nhất đến cũ nhất
+        models_to_try = ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+        
+        last_error = ""
         for model_name in models_to_try:
             try:
                 response = client.models.generate_content(model=model_name, contents=contents)
                 return f"*(Phân tích bằng lõi: {model_name})*\n" + response.text
             except Exception as e:
-                if "503" in str(e) or "429" in str(e):
-                    continue # Nghẽn mạng thì chuyển sang chip khác ngay lập tức
-                return f"Lỗi phân tích ảnh ({model_name}): {e}"
+                last_error = str(e)
+                # Bất kể lỗi 503 (nghẽn mạng) hay 404 (chip bị khai tử), bỏ qua và thử con chip tiếp theo
+                continue
                 
-        return "Lỗi: Hệ thống Google hiện đang quá tải trên toàn bộ các server. Sếp vui lòng uống ngụm nước rồi thử lại nhé!"
+        return f"Lỗi toàn tập hệ thống Google: {last_error}"
     except Exception as e:
         return f"Lỗi phân tích ảnh: {e}"
 
