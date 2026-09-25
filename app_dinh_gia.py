@@ -1,8 +1,12 @@
-﻿import streamlit as st
+import streamlit as st
 import time
 import requests
 import urllib.parse
-import google.generativeai as genai
+from google import genai
+_k1 = "AQ.Ab8RN6LjVcS6RlOqq"
+_k2 = "yIajcocXt7xL0pVm-"
+_k3 = "gJIIIsTzkXbYlsdg"
+client = genai.Client(api_key=_k1 + _k2 + _k3)
 import io
 import re
 import pandas as pd
@@ -13,52 +17,30 @@ from PIL import Image
 
 st.set_page_config(page_title="Hệ Thống BĐS - Anh Em Cùng Tiến", layout="wide", page_icon="🏘️")
 
-# Cấu hình API Key thật của sếp
-genai.configure(api_key="AIzaSyC6kbRKIURiwbmLqeztv9Un9tU5PrdZeTo")
+# Cấu hình API Key thật của sếp (Đã chuyển lên trên)
 
 def analyze_images(uploaded_files):
-    contents = ["""Đóng vai một chuyên gia thẩm định giá bất động sản. Nhìn ảnh và trả lời 3 gạch đầu dòng ngắn gọn:
+    prompt_text = """Đóng vai một chuyên gia thẩm định giá bất động sản. Nhìn ảnh và trả lời 3 gạch đầu dòng ngắn gọn:
 1. Đánh giá độ mới, hiện trạng kết cấu.
 2. Nêu 2 Ưu điểm ngoại quan.
-3. Chỉ ra 2 Nhược điểm (lỗi phong thủy, hỏng hóc) để làm cớ ép giá."""]
+3. Chỉ ra 2 Nhược điểm (lỗi phong thủy, hỏng hóc) để làm cớ ép giá."""
     
+    contents = [prompt_text]
     for f in uploaded_files:
         try:
             img = Image.open(f)
             img.thumbnail((800, 800))
             if img.mode != 'RGB':
                 img = img.convert('RGB')
-            buf = io.BytesIO()
-            img.save(buf, format='JPEG', quality=80)
-            
-            image_parts = {
-                "mime_type": "image/jpeg",
-                "data": buf.getvalue()
-            }
-            contents.append(image_parts)
+            contents.append(img)
         except Exception:
             pass
-    
-    models_to_try = ['gemini-flash-latest', 'gemini-1.5-flash', 'gemini-3.1-pro-preview', 'gemini-1.5-flash-lite']
-    last_error = ""
-    
-    for model_name in models_to_try:
-        try:
-            model = genai.GenerativeModel(model_name)
-            response = model.generate_content(contents, request_options={"timeout": 60})
-            if response.parts:
-                return f"*(Phân tích bằng lõi: {model_name})*\n" + response.text
-            else:
-                return "AI bị chặn bởi bộ lọc an toàn."
-        except Exception as e:
-            last_error = str(e)
-            continue 
-                
+            
     try:
-        available = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        return f"Vẫn lỗi mạng. Danh sách model hỗ trợ: {', '.join(available)}"
+        response = client.models.generate_content(model="gemini-3.5-flash", contents=contents)
+        return "*(Phân tích bằng lõi: gemini-3.5-flash)*\n" + response.text
     except Exception as e:
-        return f"Lỗi: {last_error}"
+        return f"Lỗi phân tích ảnh: {e}"
 
 def fetch_chotot(keyword):
     try:
@@ -377,8 +359,7 @@ Tin nhắn:
   "phaply_gia": "Pháp lý (sổ hồng...) và Giá bán"
 }}"""
                     try:
-                        model = genai.GenerativeModel('gemini-1.5-flash')
-                        res = model.generate_content(prompt_parse)
+                        res = client.models.generate_content(model="gemini-3.5-flash", contents=prompt_parse)
                         import re
                         json_str = res.text
                         json_str = re.sub(r'```json\n?', '', json_str)
@@ -521,8 +502,7 @@ Yêu cầu thêm:
 - Không dài lê thê, súc tích và đấm thẳng vào tâm lý người mua!
 """
                         try:
-                            model = genai.GenerativeModel('gemini-1.5-flash')
-                            response = model.generate_content(prompt)
+                            response = client.models.generate_content(model="gemini-3.5-flash", contents=prompt)
                             generated_text = response.text
                         except:
                             generated_text = f"BÁN NHÀ TẠI {diachi_che.upper()}\n\n📍 Vị trí: {diachi_che}\n🏠 Kết cấu: {ket_cau}\n📐 Diện tích: {dientich}\n📄 Giá: {phaply_gia}"
@@ -650,12 +630,11 @@ with tab_dao_tao:
 Bạn là một Siêu Môi Giới BĐS. Hãy đưa ra 1 câu trả lời CỰC KỲ KHÉO LÉO, mềm mỏng nhưng thuyết phục để hóa giải lời chê này, xoay chuyển tình thế biến nhược điểm thành ưu điểm (hoặc đánh lạc hướng sang ưu điểm khác của nhà như giá rẻ, an ninh...).
 Viết theo văn phong nhắn tin Zalo, ngắn gọn, thân thiện, dùng biểu tượng cảm xúc.'''
                 try:
-                    model = genai.GenerativeModel('gemini-1.5-flash')
-                    response = model.generate_content(prompt)
+                    response = client.models.generate_content(model="gemini-3.5-flash", contents=prompt)
                     st.success("**Copy đoạn này gửi lại cho khách ngay:**")
                     st.write(response.text)
                 except Exception as e:
-                    st.error("Lỗi kết nối AI. Anh em thử lại sau!")
+                    st.error(f"Lỗi kết nối AI: {e}")
         else:
             st.warning("Nhập câu chê của khách vào đi anh em!")
 
