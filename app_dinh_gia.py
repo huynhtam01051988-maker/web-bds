@@ -201,7 +201,7 @@ with tab_dinh_gia:
                             st.info(ai_analysis)
                             
                             # LƯU THEO TÙY CHỌN CỦA USER
-                            if luu_bao_cao:
+                            if luu_bao_cao and "Lỗi phân tích ảnh" not in ai_analysis:
                                 try:
                                     ts = int(time.time())
                                     req_data = {"time": ts, "address": dia_chi, "analysis": ai_analysis}
@@ -209,6 +209,8 @@ with tab_dinh_gia:
                                     st.toast("✅ Đã lưu Báo cáo phân tích vào Lịch sử!")
                                 except:
                                     pass
+                            elif luu_bao_cao:
+                                st.warning("⚠️ Báo cáo bị lỗi mạng, hệ thống tự động từ chối lưu vào Lịch sử.")
                     else:
                         st.warning("⚠️ Không có ảnh. Hệ thống bỏ qua bước soi lỗi nhà.")
                         
