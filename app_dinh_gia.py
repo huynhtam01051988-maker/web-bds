@@ -183,6 +183,7 @@ with tab_dinh_gia:
         st.subheader("📸 Tải ảnh để MẮT THẦN AI soi lỗi")
         uploaded_files = st.file_uploader("Kéo thả tối đa 5 ảnh vào đây", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
         
+        luu_bao_cao = st.checkbox("💾 Lưu bài phân tích này vào Lịch sử (Kho mây)", value=False)
         btn = st.button("🚀 KÍCH HOẠT ĐỊNH GIÁ TOÀN DIỆN", type="primary", use_container_width=True)
 
     with col2:
@@ -198,14 +199,16 @@ with tab_dinh_gia:
                         with st.spinner("🧠 AI đang quét từng chi tiết trong ảnh..."):
                             ai_analysis = analyze_images(uploaded_files)
                             st.info(ai_analysis)
-                            # AUTO-SAVE TỰ ĐỘNG
-                            try:
-                                ts = int(time.time())
-                                req_data = {"time": ts, "address": dia_chi, "analysis": ai_analysis}
-                                requests.put(f"{FIREBASE_URL}/ai_reports/{ts}.json", json=req_data)
-                                st.toast("✅ Đã tự động lưu Báo cáo phân tích vào Lịch sử!")
-                            except:
-                                pass
+                            
+                            # LƯU THEO TÙY CHỌN CỦA USER
+                            if luu_bao_cao:
+                                try:
+                                    ts = int(time.time())
+                                    req_data = {"time": ts, "address": dia_chi, "analysis": ai_analysis}
+                                    requests.put(f"{FIREBASE_URL}/ai_reports/{ts}.json", json=req_data)
+                                    st.toast("✅ Đã lưu Báo cáo phân tích vào Lịch sử!")
+                                except:
+                                    pass
                     else:
                         st.warning("⚠️ Không có ảnh. Hệ thống bỏ qua bước soi lỗi nhà.")
                         
