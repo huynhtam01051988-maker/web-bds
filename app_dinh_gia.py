@@ -49,7 +49,8 @@ Trả lời bằng giọng điệu dân cò đất thực chiến, sắc bén v�
 def fetch_chotot(keyword):
     try:
         encoded_kw = urllib.parse.quote(keyword)
-        url = f"https://gateway.chotot.com/v1/public/ad-listing?cg=1000&q={encoded_kw}&limit=5"
+        # cg=1010 chuyên trang Mua Bán (loại trừ mục Cho Thuê)
+        url = f"https://gateway.chotot.com/v1/public/ad-listing?cg=1010&q={encoded_kw}&limit=5"
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         res = requests.get(url, headers=headers, timeout=5)
         
@@ -61,6 +62,9 @@ def fetch_chotot(keyword):
                 body = ad.get('body', '').lower()
                 price = ad.get('price', 0) / 1_000_000_000 
                 area = ad.get('size', 0)
+                # Lọc giá >= 0.5 Tỷ để chắc chắn không vớt nhầm nhà cho thuê
+                if price < 0.5:
+                    continue
                 link = f"https://nha.chotot.com/mua-ban-nha-dat/{ad.get('list_id', '')}.htm"
                 
                 phap_ly = "Sổ hồng"
@@ -156,6 +160,7 @@ with tab_dinh_gia:
         st.caption("Hãy nhập từ khóa ngắn gọn (Ví dụ: tên đường + quận) để Bot cào được nhiều nhà nhất.")
         
         nguon_du_lieu = st.selectbox("🌐 Nguồn cào dữ liệu", ["Chợ Tốt (Khuyên dùng)", "Mogi.vn", "Cào Tất Cả (Chợ Tốt + Mogi)"])
+        loai_vi_tri = st.selectbox("📍 Vị trí nhà (Quyết định 30% giá)", ["Hẻm Xe Hơi", "Mặt Tiền", "Hẻm Ba Gác / Xe Máy"])
         
         c1, c2 = st.columns(2)
         with c1:
@@ -226,7 +231,17 @@ with tab_dinh_gia:
                             
                         if count_sach > 0:
                             don_gia_dat = sum_don_gia_sach / count_sach
-                            st.success(f"**=> Đơn giá trung bình (CHỈ TÍNH NHÀ SỔ HỒNG SẠCH): {don_gia_dat:.1f} Triệu/m2**")
+                            st.success(f"**=> Đơn giá nền khu vực (CHỈ TÍNH NHÀ SỔ HỒNG SẠCH): {don_gia_dat:.1f} Triệu/m2**")
+                            
+                            # ĐIỀU CHỈNH THEO HỆ SỐ VỊ TRÍ
+                            if loai_vi_tri == "Mặt Tiền":
+                                don_gia_dat = don_gia_dat * 1.35
+                                st.info(f"📈 Hệ số Vị Trí: **Mặt Tiền (+35%)** -> Nâng đơn giá lên **{don_gia_dat:.1f} Triệu/m2**")
+                            elif loai_vi_tri == "Hẻm Ba Gác / Xe Máy":
+                                don_gia_dat = don_gia_dat * 0.85
+                                st.warning(f"📉 Hệ số Vị Trí: **Hẻm Nhỏ (-15%)** -> Giảm đơn giá xuống **{don_gia_dat:.1f} Triệu/m2**")
+                            else:
+                                st.info(f"💡 Hệ số Vị Trí: **Hẻm Xe Hơi (Mặc định)** -> Giữ nguyên đơn giá.")
                         else:
                             st.warning("⚠️ Toàn bộ nhà tìm thấy đều là Vi Bằng/Sổ chung. Đang dùng đơn giá dự phòng 90tr/m2 để tính toán.")
                             don_gia_dat = 90.0
