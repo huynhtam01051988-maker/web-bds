@@ -557,7 +557,12 @@ with tab_phap_ly:
         with st.expander("BƯỚC 1: Ký Hợp đồng Đặt Cọc", expanded=True):
             st.markdown("""
 **Thao tác:** Bên Mua xuống tiền cọc. Hai bên ký Giấy nhận cọc, chốt thời hạn ra Công chứng.  
-**Quan trọng:** Phải chốt RÕ RÀNG ai là người đóng Thuế TNCN (2%), Lệ phí trước bạ (0.5%) và Phí sang tên sổ (Tức là thỏa thuận có 'Bao sổ' hay không).
+**Quan trọng nhất (Tránh cãi nhau):** Phải chốt RÕ RÀNG trên giấy cọc các khoản phí này ai đóng:
+- **Thuế TNCN (2%):** (Luật quy định **BÊN BÁN** đóng).
+- **Lệ phí trước bạ (0.5%):** (Luật quy định **BÊN MUA** đóng).
+- **Phí sang tên cấp sổ mới:** (Luật quy định **BÊN MUA** đóng).
+- **Phí Hoa Hồng Môi Giới:** (Thường do **BÊN BÁN** đóng, trừ khi Mua nhờ tìm).
+*(Thực tế 2 bên có thể thỏa thuận 1 người chịu hết toàn bộ gọi là "Bao sổ", môi giới cần chốt kỹ chỗ này).*
             """)
         with st.expander("BƯỚC 2: Công chứng Hợp đồng (HĐCN)"):
             st.markdown("""
@@ -567,10 +572,10 @@ with tab_phap_ly:
         with st.expander("BƯỚC 3 & 4: Khai Thuế và Đăng bộ Sang tên"):
             st.markdown("""
 - **Khai thuế:** Nộp hồ sơ tại Bộ phận Một cửa cấp Quận/Huyện trong vòng 30 ngày. 
-- **Đóng thuế:** 
-  - *Bên Bán (Người bán):* Đóng Thuế TNCN **2%** (Dựa trên giá Hợp đồng hoặc giá Nhà nước mới cập nhật 2024). Được miễn nếu là tài sản duy nhất.
-  - *Bên Mua (Người mua):* Đóng Lệ phí trước bạ **0.5%** + vài trăm ngàn lệ phí cấp sổ.
-- **Sang tên:** Đóng biên lai thuế xong, nộp lại cho Một cửa. Đợi 14-21 ngày lấy Sổ hồng mới!
+- **Ai đi nộp tiền?:** 
+  - **BÊN BÁN:** Phải đi đóng Thuế TNCN **2%** (Được miễn nếu chứng minh được đây là căn nhà/mảnh đất duy nhất).
+  - **BÊN MUA:** Phải đi đóng Lệ phí trước bạ **0.5%** + vài trăm ngàn lệ phí cấp đổi sổ.
+- **Sang tên:** Đóng đủ biên lai thuế xong, nộp lại cho Một cửa. Đợi 14-21 ngày lấy Sổ hồng mới mang tên Bên Mua!
             """)
 
     with colB:
