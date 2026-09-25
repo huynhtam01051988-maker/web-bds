@@ -41,8 +41,16 @@ Trả lời bằng giọng điệu dân cò đất thực chiến, sắc bén v�
             pass
             
     try:
-        response = client.models.generate_content(model="gemini-3.5-flash", contents=contents)
-        return "*(Phân tích bằng lõi: gemini-3.5-flash)*\n" + response.text
+        # Vòng lặp chống lỗi 503 (Thử lại tối đa 4 lần nếu Google bị nghẽn)
+        for attempt in range(4):
+            try:
+                response = client.models.generate_content(model="gemini-3.5-flash", contents=contents)
+                return "*(Phân tích bằng lõi: gemini-3.5-flash)*\n" + response.text
+            except Exception as e:
+                if "503" in str(e) and attempt < 3:
+                    time.sleep(3) # Đợi 3 giây rồi thử lại
+                    continue
+                return f"Lỗi phân tích ảnh: {e}"
     except Exception as e:
         return f"Lỗi phân tích ảnh: {e}"
 
