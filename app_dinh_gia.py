@@ -159,7 +159,7 @@ st.title("🤖 HỆ THỐNG ĐIỀU PHỐI & ĐỊNH GIÁ BĐS - ANH EM CÙNG TI
 st.markdown("*Công cụ tối thượng dành riêng cho Hội **Anh Em Cùng Tiến** (Tâm - Dinh - Việt - Phát)*")
 st.markdown("---")
 
-tab_dinh_gia, tab_quy_hoach, tab_quan_ly, tab_phap_ly = st.tabs(["📊 1. LÕI AI ĐỊNH GIÁ", "🗺️ 2. SOI QUY HOẠCH", "🤝 3. QUẢN LÝ TEAM (CRM)", "⚖️ 4. QUY TRÌNH & PHÁP LÝ"])
+tab_dinh_gia, tab_quy_hoach, tab_quan_ly, tab_phap_ly, tab_dao_tao = st.tabs(["📊 1. LÕI AI ĐỊNH GIÁ", "🗺️ 2. SOI QUY HOẠCH", "🤝 3. QUẢN LÝ TEAM", "⚖️ 4. PHÁP LÝ", "🎓 5. ĐÀO TẠO NEWBIE"])
 
 with tab_dinh_gia:
     col1, col2 = st.columns([1, 1.5])
@@ -584,3 +584,78 @@ with tab_phap_ly:
         st.error("**BẪY 2: Môi giới tự nhận cọc giùm**\n\nTuyệt đối KHÔNG cầm tiền cọc của khách thay chủ nhà nếu không có HĐ Ủy Quyền hợp pháp. Nếu chủ nhà lật kèo không bán, Môi giới sẽ dính tội 'Lừa đảo chiếm đoạt tài sản'. Tiền cọc phải bank thẳng cho Chủ.")
         st.error("**BẪY 3: Lướt sóng bằng HĐ 'Ủy quyền toàn quyền'**\n\nHiện cơ quan thuế đánh Thuế TNCN 2 LẦN (4%) nếu dùng HĐ Ủy quyền mang đi bán. Ngoài ra, nếu Chủ nhà (Người ủy quyền) MẤT năng lực hành vi hoặc QUA ĐỜI, HĐ Ủy quyền tự động vô hiệu -> Khách hàng Mất Trắng nhà!")
         st.error("**BẪY 4: 'Kênh Giá' thay vì nhận Hoa Hồng**\n\nChủ gửi 5 tỷ, kê lên 5.5 tỷ để ăn khúc giữa là ĐIỀU TỐI KỴ. Luật KD BĐS 2023 cấm cò mồi hoạt động kiểu này. Phải minh bạch giá thật 100% với cả 2 bên và nhận Hoa hồng đúng Hợp Đồng Môi Giới.")
+
+# --- TAB 5: ĐÀO TẠO NEWBIE ---
+with tab_dao_tao:
+    st.header("🎓 TRƯỜNG ĐÀO TẠO CÒ ĐẤT THỰC CHIẾN (DÀNH CHO ANH EM MỚI)")
+    st.markdown("---")
+    
+    col_pt, col_tu = st.columns(2)
+    
+    with col_pt:
+        st.subheader("🧭 1. MÁY TÍNH PHONG THỦY TỐC ĐỘ")
+        st.info("Nhập năm sinh khách hàng, Web sẽ tự động tính ra Hướng hợp mệnh để anh em chém gió như Thầy phong thủy.")
+        nam_sinh = st.number_input("Nhập năm sinh khách (VD: 1985):", min_value=1930, max_value=2024, value=1980, step=1)
+        gioi_tinh = st.radio("Giới tính khách hàng:", ["Nam", "Nữ"], horizontal=True)
+        
+        if st.button("🔮 Tính Hướng"):
+            # Tính quái số
+            sum_digits = sum(int(digit) for digit in str(nam_sinh))
+            while sum_digits > 9:
+                sum_digits = sum(int(digit) for digit in str(sum_digits))
+                
+            if nam_sinh < 2000:
+                kua = (11 - sum_digits) if gioi_tinh == "Nam" else (4 + sum_digits)
+            else:
+                kua = (9 - sum_digits) if gioi_tinh == "Nam" else (6 + sum_digits)
+                
+            if kua > 9:
+                kua = sum(int(digit) for digit in str(kua))
+            
+            # Khử số 5
+            if kua == 5:
+                kua = 2 if gioi_tinh == "Nam" else 8
+                
+            dong_tu_trach = [1, 3, 4, 9]
+            tay_tu_trach = [2, 6, 7, 8]
+            
+            if kua in dong_tu_trach:
+                st.success("✅ Khách thuộc **ĐÔNG TỨ MỆNH**")
+                st.markdown("**👉 Hướng nhà cực hợp:** Đông, Đông Nam, Nam, Bắc.")
+                st.markdown("**❌ Hướng nhà kỵ (né):** Tây, Tây Bắc, Tây Nam, Đông Bắc.")
+            else:
+                st.success("✅ Khách thuộc **TÂY TỨ MỆNH**")
+                st.markdown("**👉 Hướng nhà cực hợp:** Tây, Tây Bắc, Tây Nam, Đông Bắc.")
+                st.markdown("**❌ Hướng nhà kỵ (né):** Đông, Đông Nam, Nam, Bắc.")
+
+    with col_tu:
+        st.subheader("📖 2. TỪ ĐIỂN TỪ LÓNG (ĐỂ KHÔNG BỊ DẮT MŨI)")
+        st.markdown("**1. Sổ chung:** Nhiều nhà chung 1 sổ. Bán phải có chữ ký tất cả. Mua rủi ro chôn vốn cao. Cực kỳ khó vay Bank.")
+        st.markdown("**2. Vi bằng:** Chỉ là 'Giấy làm chứng có giao tiền' của Thừa phát lại, **KHÔNG CÓ GIÁ TRỊ PHÁP LÝ** chứng minh sở hữu nhà. Tuyệt đối đừng đụng vào.")
+        st.markdown("**3. Chưa hoàn công:** Xây nhà xong nhưng chưa cập nhật lên Sổ hồng. Tức là trên mặt pháp lý, khu đất đó vẫn chỉ là Đất trống. Bị ép giá rất mạnh.")
+        st.markdown("**4. Đường đâm (Đâm đụng):** Con đường đâm thẳng vào cửa chính nhà. Phong thủy coi là cực độc. NHƯNG nếu làm mặt bằng Kinh doanh thì lại vô cùng hút khách (vì biển hiệu đập thẳng vào mắt người đi đường).")
+        st.markdown("**5. Tóp hậu / Nở hậu:** Tóp hậu là đuôi nhà nhỏ hơn mặt tiền (Tiền vô rồi chui ra hết - Khách rất ghét). Nở hậu là đuôi nhà to hơn mặt tiền (Túi giữ tiền - Khách cực kỳ thích).")
+        st.markdown("**6. Ngộp Bank / Thở Oxy:** Chủ nhà hết khả năng trả nợ ngân hàng, bị réo gọi liên tục, ép bán gấp dưới giá thị trường để trả nợ. Đây là Mỏ Vàng của cò đất!")
+
+    st.markdown("---")
+    st.subheader("🤖 3. AI COACH - LUYỆN KỊCH BẢN CHỐT SALE (ĐỠ ĐÒN TỪ KHÁCH)")
+    st.info("Khách chê nhà hẻm sâu? Khách chê giá cao? Gõ thẳng câu chê của khách vào đây, Siêu Cò AI sẽ viết sẵn câu trả lời để anh em copy gửi lại 'đỡ đòn' ngay lập tức!")
+    
+    loi_che = st.text_input("💬 Khách hàng nhắn câu gì (hoặc chê gì):", placeholder="VD: Nhà hẻm nhỏ quá em ơi, xe máy đi qua không lọt...")
+    
+    if st.button("🛡️ Xin Kịch Bản Đỡ Đòn"):
+        if loi_che:
+            with st.spinner("Đang lục tìm bí kíp 10 năm chốt sale..."):
+                prompt = f'''Khách hàng mua nhà vừa chê: "{loi_che}".
+Bạn là một Siêu Môi Giới BĐS. Hãy đưa ra 1 câu trả lời CỰC KỲ KHÉO LÉO, mềm mỏng nhưng thuyết phục để hóa giải lời chê này, xoay chuyển tình thế biến nhược điểm thành ưu điểm (hoặc đánh lạc hướng sang ưu điểm khác của nhà như giá rẻ, an ninh...).
+Viết theo văn phong nhắn tin Zalo, ngắn gọn, thân thiện, dùng biểu tượng cảm xúc.'''
+                try:
+                    model = genai.GenerativeModel('gemini-3.5-flash')
+                    response = model.generate_content(prompt)
+                    st.success("**Copy đoạn này gửi lại cho khách ngay:**")
+                    st.write(response.text)
+                except Exception as e:
+                    st.error("Lỗi kết nối AI. Anh em thử lại sau!")
+        else:
+            st.warning("Nhập câu chê của khách vào đi anh em!")
+
