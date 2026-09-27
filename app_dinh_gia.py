@@ -23,11 +23,22 @@ st.set_page_config(page_title="Hệ Thống BĐS - Anh Em Cùng Tiến", layout=
 
 def analyze_images(uploaded_files):
     prompt_text = """Đóng vai một Siêu Cò Bất Động Sản kiêm Chuyên gia Thẩm định giá lão luyện. 
-Hãy soi thật kỹ các bức ảnh này và đưa ra 1 Bản Phân Tích Thật Sâu Sắc, Chi Tiết để dân trong nghề đi chốt khách:
-1. 🏠 KIẾN TRÚC & HIỆN TRẠNG: Đánh giá chi tiết kết cấu, mức độ xuống cấp, có cần đập đi xây lại không? (Nếu là nhà tạm/cấp 4 thì nhấn mạnh chỉ tính giá đất).
-2. 💎 ĐIỂM ĂN TIỀN (ĐỂ CHỐT SALE): Moi móc bằng được những ưu điểm vượt trội (Vị trí, mặt tiền, hẻm xe hơi, khả năng cho thuê tạo dòng tiền, hạ tầng).
-3. 🚨 TỬ HUYỆT (ĐỂ ÉP GIÁ CHỦ NHÀ): Bới lông tìm vết từng lỗi nhỏ nhất (Lỗi phong thủy như cột điện, đâm đường, tóp hậu, hoặc rủi ro quy hoạch lộ giới, ồn ào...).
-Trả lời bằng giọng điệu dân cò đất thực chiến, sắc bén và thuyết phục."""
+Hãy soi thật kỹ các bức ảnh này (đặc biệt chú ý nếu có ảnh Sổ Hồng/Sơ đồ thửa đất) và đưa ra 1 Bản Phân Tích Thật Sâu Sắc:
+1. 🏠 KIẾN TRÚC & HIỆN TRẠNG: Đánh giá kết cấu, mức độ xuống cấp. Nếu có Sổ Hồng, hãy đọc chính xác Diện tích công nhận, Cấp nhà.
+2. 💎 ĐIỂM ĂN TIỀN (ĐỂ CHỐT SALE): Ưu điểm vượt trội (Vị trí, mặt tiền, hẻm, hình dáng đất vuông vức).
+3. 🚨 TỬ HUYỆT (ĐỂ ÉP GIÁ CHỦ NHÀ): Bới lông tìm vết! Đọc Sơ đồ Sổ Hồng xem có bị Tóp hậu không? Có bị cắt Ranh Lộ Giới nặng không? Nhìn ảnh thực tế xem có dính cột điện, hố ga, đường đâm không?
+4. 💡 CHIẾN LƯỢC BÁN: Đưa ra lời khuyên thực chiến cho Sale.
+
+QUAN TRỌNG NHẤT: Bắt buộc ở cuối cùng bài phân tích, bạn phải xuất ra một khối dữ liệu JSON y hệt định dạng sau để phần mềm tự động lấy số liệu tính toán (chỉ xuất JSON, đặt trong ```json ... ```):
+```json
+{
+  "dien_tich_dat_m2": [Nhập diện tích đất nếu thấy trong Sổ Hồng hoặc ảnh, nếu không thấy để 0],
+  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 thì 0, nhà 1 trệt 1 lầu cũ thì 500, biệt thự mới thì 2000. Tính thật sát giá thực tế],
+  "he_so_hinh_dang_lo_gioi": [Hệ số từ 0.7 đến 1.0. Tóp hậu hoặc dính lộ giới cắt sâu thì 0.8-0.9, vuông vức thì 1.0],
+  "he_so_phong_thuy": [Hệ số từ 0.8 đến 1.0. Dính cột điện/hố ga to trước nhà thì 0.85-0.9, không lỗi thì 1.0]
+}
+```
+Tuyệt đối tuân thủ định dạng JSON này ở cuối câu trả lời!"""
     
     contents = [prompt_text]
     for f in uploaded_files:
@@ -206,9 +217,26 @@ with tab_dinh_gia:
                 with st.spinner("🤖 Đang kết nối Mắt thần AI và bung Bot cào thị trường..."):
                     
                     st.subheader("👁️ 1. Phân tích Hiện trạng (Vision AI Thật)")
+                    ai_params = {
+                        "dien_tich_dat_m2": 0,
+                        "xac_nha_trieu_vnd": 0,
+                        "he_so_hinh_dang_lo_gioi": 1.0,
+                        "he_so_phong_thuy": 1.0
+                    }
                     if uploaded_files:
-                        with st.spinner("🧠 AI đang quét từng chi tiết trong ảnh..."):
+                        with st.spinner("🧠 AI đang quét từng chi tiết trong ảnh và Sổ Hồng..."):
                             ai_analysis = analyze_images(uploaded_files)
+                            
+                            import re, json
+                            json_match = re.search(r'```json\n(.*?)\n```', ai_analysis, re.DOTALL)
+                            if json_match:
+                                try:
+                                    parsed = json.loads(json_match.group(1))
+                                    ai_params.update(parsed)
+                                    ai_analysis = ai_analysis.replace(json_match.group(0), "")
+                                except Exception as e:
+                                    pass
+                                    
                             st.info(ai_analysis)
                             
                             # LƯU THEO TÙY CHỌN CỦA USER
@@ -273,19 +301,51 @@ with tab_dinh_gia:
                     else:
                         st.warning("⚠️ Bot không tìm thấy tin rao bán nào khớp với từ khóa này. Đang dùng giá dự phòng.")
                         
-                    st.subheader("💰 3. CHỐT GIÁ & CHIẾN LƯỢC")
-                    gia_tri_thuc = (dien_tich * don_gia_dat) / 1000
+                    st.subheader("💰 3. CHỐT GIÁ & CHIẾN LƯỢC TỪ SIÊU CÒ")
+                    
+                    # 1. Ưu tiên Diện tích từ Sổ Hồng (AI bóc được), không có thì xài diện tích user nhập
+                    dt_thuc_te = ai_params["dien_tich_dat_m2"] if ai_params.get("dien_tich_dat_m2", 0) > 0 else dien_tich
+                    
+                    # 2. Ép giá diện tích quá lớn (> 100m2 giảm 10% đơn giá)
+                    he_so_dt_lon = 0.9 if dt_thuc_te >= 100 else 1.0
+                    
+                    # 3. Bóc tách tiền Xác Nhà khỏi Đơn giá Chợ Tốt (Thường đơn giá đã gộp nhà, nên trừ đi 10tr/m2 coi như trung bình)
+                    don_gia_dat_thuan = don_gia_dat - 10.0 if don_gia_dat > 30 else don_gia_dat
+                    
+                    # 4. Tính toán
+                    gia_tri_dat_thuan = (dt_thuc_te * don_gia_dat_thuan * he_so_dt_lon) / 1000
+                    gia_tri_xac_nha = ai_params.get("xac_nha_trieu_vnd", 0) / 1000
+                    tong_ly_tuong = gia_tri_dat_thuan + gia_tri_xac_nha
+                    
+                    # 5. Phạt lỗi Phong thủy & Lộ giới (AI đánh giá)
+                    he_so_lo_gioi = ai_params.get("he_so_hinh_dang_lo_gioi", 1.0)
+                    he_so_pt = ai_params.get("he_so_phong_thuy", 1.0)
+                    gia_tri_thuc = tong_ly_tuong * he_so_lo_gioi * he_so_pt
+                    
+                    # 6. Bảng hiển thị bóc tách công thức
+                    with st.expander("🧮 Bảng bóc tách công thức Thẩm Định Giá (AI tính)", expanded=True):
+                        st.markdown(f"- **Diện tích áp dụng:** `{dt_thuc_te} m2` *(Từ Sổ Hồng hoặc nhập tay)*")
+                        if he_so_dt_lon < 1.0:
+                            st.markdown(f"- **Phạt diện tích lớn (>100m2):** Giảm 10% đơn giá đất")
+                        st.markdown(f"- **Đơn giá đất thuần (Đã bóc xác nhà & phạt DT):** `{don_gia_dat_thuan * he_so_dt_lon:.1f} tr/m2`")
+                        st.markdown(f"- **Tiền Đất:** `{gia_tri_dat_thuan:.2f} Tỷ`")
+                        st.markdown(f"- **Tiền Xác Nhà (AI ước tính):** `{gia_tri_xac_nha:.2f} Tỷ`")
+                        st.markdown(f"**=> Tổng Đất + Nhà (Hoàn hảo): `{tong_ly_tuong:.2f} Tỷ`**")
+                        
+                        if he_so_lo_gioi < 1.0 or he_so_pt < 1.0:
+                            st.error(f"⚠️ **Bị đè giá do Lỗi Phong Thủy/Hình Dáng (AI soi):** Nhân hệ số {(he_so_lo_gioi * he_so_pt):.2f}")
+                            st.markdown(f"📉 *Ép giá thành công: Chủ nhà bị mất {(tong_ly_tuong - gia_tri_thuc):.2f} Tỷ*")
                     
                     st.metric(label="Thẩm Định Giá Trị Thực (Tỷ VNĐ)", value=f"{gia_tri_thuc:.1f} Tỷ - {gia_tri_thuc + 0.4:.1f} Tỷ")
                     
                     if gia_chu_keu > 0:
                         lech = gia_chu_keu - gia_tri_thuc
                         if lech > 0.5:
-                            st.error(f"❌ **Chiến lược:** Chủ đang hô quá cao (Chênh {lech:.1f} Tỷ). Lấy ngay link nhà sổ hồng đối thủ ở trên để dìm giá xuống **{gia_tri_thuc - 0.5:.1f} Tỷ**.")
+                            st.error(f"❌ **Chiến lược:** Chủ đang ngáo giá (Chênh {lech:.1f} Tỷ). Lấy Bảng bóc tách AI ở trên cộng link nhà đối thủ ra đập vào mặt để dìm giá xuống **{gia_tri_thuc - 0.5:.1f} Tỷ**.")
                         else:
-                            st.success(f"✅ **Chiến lược:** Chủ rao sát giá thị trường. Chốt hạ quanh mốc **{gia_tri_thuc:.1f} Tỷ**.")
+                            st.success(f"✅ **Chiến lược:** Chủ rao sát giá thị trường. Khen chủ nhà 1 câu rồi chốt hạ quanh mốc **{gia_tri_thuc:.1f} Tỷ**.")
                     else:
-                        st.info(f"💡 Ném giá mồi ở mức **{gia_tri_thuc - 0.4:.1f} Tỷ** xem thái độ chủ nhà.")
+                        st.info(f"💡 Dùng bảng tính AI trên để ném giá mồi ở mức **{gia_tri_thuc - 0.4:.1f} Tỷ** xem thái độ chủ nhà.")
 
     st.markdown("---")
     with st.expander("📚 LỊCH SỬ PHÂN TÍCH HÌNH ẢNH (AUTO-SAVED)", expanded=False):
