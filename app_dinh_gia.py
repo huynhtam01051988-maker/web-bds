@@ -22,20 +22,20 @@ st.set_page_config(page_title="Hệ Thống BĐS - Anh Em Cùng Tiến", layout=
 # Cấu hình API Key thật của sếp (Đã chuyển lên trên)
 
 def analyze_images(uploaded_files):
-    prompt_text = """Đóng vai một Siêu Cò Bất Động Sản kiêm Chuyên gia Thẩm định giá lão luyện. 
+    prompt_text = """Đóng vai một Chuyên gia Thẩm định giá Bất Động Sản thực chiến.
 Hãy soi thật kỹ các bức ảnh này (đặc biệt chú ý nếu có ảnh Sổ Hồng/Sơ đồ thửa đất) và đưa ra 1 Bản Phân Tích Thật Sâu Sắc:
 1. 🏠 KIẾN TRÚC & HIỆN TRẠNG: Đánh giá kết cấu, mức độ xuống cấp. Nếu có Sổ Hồng, hãy đọc chính xác Diện tích công nhận, Cấp nhà.
-2. 💎 ĐIỂM ĂN TIỀN (ĐỂ CHỐT SALE): Ưu điểm vượt trội (Vị trí, mặt tiền, hẻm, hình dáng đất vuông vức).
-3. 🚨 TỬ HUYỆT (ĐỂ ÉP GIÁ CHỦ NHÀ): Bới lông tìm vết! Đọc Sơ đồ Sổ Hồng xem có bị Tóp hậu không? Có bị cắt Ranh Lộ Giới nặng không? Nhìn ảnh thực tế xem có dính cột điện, hố ga, đường đâm không?
+2. 💎 ĐIỂM ĂN TIỀN: Ưu điểm vượt trội (Vị trí, mặt tiền, hẻm, hình dáng đất vuông vức).
+3. 🚨 TỬ HUYỆT (ĐIỂM TRỪ): Bới lông tìm vết! Đọc Sơ đồ Sổ Hồng xem có bị Tóp hậu không? Có bị cắt Ranh Lộ Giới nặng không? Nhìn ảnh thực tế xem có dính cột điện, hố ga, đường đâm không?
 4. 💡 CHIẾN LƯỢC BÁN: Đưa ra lời khuyên thực chiến cho Sale.
 
 QUAN TRỌNG NHẤT: Bắt buộc ở cuối cùng bài phân tích, bạn phải xuất ra một khối dữ liệu JSON y hệt định dạng sau để phần mềm tự động lấy số liệu tính toán (chỉ xuất JSON, đặt trong ```json ... ```):
 ```json
 {
   "dien_tich_dat_m2": [Nhập diện tích đất nếu thấy trong Sổ Hồng hoặc ảnh, nếu không thấy để 0],
-  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 thì 0, nhà 1 trệt 1 lầu cũ thì 500, biệt thự mới thì 2000. Tính thật sát giá thực tế],
-  "he_so_hinh_dang_lo_gioi": [Hệ số từ 0.7 đến 1.0. Tóp hậu hoặc dính lộ giới cắt sâu thì 0.8-0.9, vuông vức thì 1.0],
-  "he_so_phong_thuy": [Hệ số từ 0.8 đến 1.0. Dính cột điện/hố ga to trước nhà thì 0.85-0.9, không lỗi thì 1.0]
+  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 thì 100, nhà 1 trệt 1 lầu thì 800, biệt thự mới thì 2000. Tính theo giá thị trường],
+  "he_so_hinh_dang_lo_gioi": [Hệ số từ 0.9 đến 1.0. Tóp hậu hoặc dính lộ giới thì 0.9 - 0.95 (vì hiện nay đền bù lộ giới rất cao nên không trừ nhiều nữa), vuông vức thì 1.0],
+  "he_so_phong_thuy": [Hệ số từ 0.9 đến 1.0. Dính cột điện/hố ga to trước nhà thì 0.95, không lỗi thì 1.0]
 }
 ```
 Tuyệt đối tuân thủ định dạng JSON này ở cuối câu trả lời!"""
@@ -244,17 +244,7 @@ with tab_dinh_gia:
                                     
                             st.info(ai_analysis)
                             
-                            # LƯU THEO TÙY CHỌN CỦA USER
-                            if luu_bao_cao and "Lỗi phân tích ảnh" not in ai_analysis:
-                                try:
-                                    ts = int(time.time())
-                                    req_data = {"time": ts, "address": dia_chi, "analysis": ai_analysis}
-                                    requests.put(f"{FIREBASE_URL}/ai_reports/{ts}.json", json=req_data)
-                                    st.toast("✅ Đã lưu Báo cáo phân tích vào Lịch sử!")
-                                except:
-                                    pass
-                            elif luu_bao_cao:
-                                st.warning("⚠️ Báo cáo bị lỗi mạng, hệ thống tự động từ chối lưu vào Lịch sử.")
+                            # Logic lưu đã được chuyển xuống phần Chốt Giá để lưu được cả Giá Tiền
                     else:
                         st.warning("⚠️ Không có ảnh. Hệ thống bỏ qua bước soi lỗi nhà.")
                         
@@ -351,7 +341,26 @@ with tab_dinh_gia:
                             st.success(f"✅ **Chiến lược:** Chủ rao sát giá thị trường. Khen chủ nhà 1 câu rồi chốt hạ quanh mốc **{gia_tri_thuc:.1f} Tỷ**.")
                     else:
                         st.info(f"💡 Dùng bảng tính AI trên để ném giá mồi ở mức **{gia_tri_thuc - 0.4:.1f} Tỷ** xem thái độ chủ nhà.")
-
+                        
+                    # LƯU THEO TÙY CHỌN CỦA USER (ĐÃ BAO GỒM GIÁ)
+                    if luu_bao_cao:
+                        try:
+                            if 'ai_analysis' not in locals():
+                                ai_analysis = "*Không tải ảnh lên để phân tích.*"
+                                
+                            if "Lỗi toàn tập" not in ai_analysis:
+                                gia_tien_str = f"### 💰 ĐỊNH GIÁ TRỊ THỰC: {gia_tri_thuc:.1f} Tỷ - {gia_tri_thuc + 0.4:.1f} Tỷ\n\n"
+                                bang_tinh_str = f"**Bảng bóc tách AI:**\n- Diện tích: {dt_thuc_te} m2\n- Đơn giá đất thuần: {don_gia_dat_thuan:.1f} tr/m2\n- Giá trị nhà: {gia_tri_xac_nha:.2f} Tỷ\n- Hệ số Phong thủy/Lộ giới: {(he_so_lo_gioi * he_so_pt):.2f}\n\n"
+                                full_report = gia_tien_str + bang_tinh_str + "---\n\n" + ai_analysis
+                                
+                                ts = int(time.time())
+                                req_data = {"time": ts, "address": dia_chi, "analysis": full_report}
+                                requests.put(f"{FIREBASE_URL}/ai_reports/{ts}.json", json=req_data)
+                                st.toast("✅ Đã lưu toàn bộ Báo cáo (Bao gồm Giá tiền) vào Lịch sử!")
+                            else:
+                                st.warning("⚠️ Báo cáo AI bị lỗi mạng nên hệ thống từ chối lưu.")
+                        except Exception as e:
+                            st.warning(f"⚠️ Không thể lưu Lịch sử: {e}")
     st.markdown("---")
     with st.expander("📚 LỊCH SỬ PHÂN TÍCH HÌNH ẢNH (AUTO-SAVED)", expanded=False):
         try:
