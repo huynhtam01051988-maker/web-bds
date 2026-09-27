@@ -33,9 +33,9 @@ QUAN TRỌNG NHẤT: Bắt buộc ở cuối cùng bài phân tích, bạn phả
 ```json
 {
   "dien_tich_dat_m2": [Nhập diện tích đất nếu thấy trong Sổ Hồng hoặc ảnh, nếu không thấy để 0],
-  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 thì 200, nhà 1 lầu thì 800. Tính theo giá thị trường, không được ép về 0],
-  "he_so_hinh_dang_lo_gioi": [Hệ số từ 0.95 đến 1.0. HIỆN NAY ĐỀN BÙ LỘ GIỚI BẰNG GIÁ THỊ TRƯỜNG, NÊN DÍNH LỘ GIỚI VẪN TÍNH HỆ SỐ 1.0 (KHÔNG BỊ PHẠT). Chỉ trừ tiền nếu nhà bị tóp hậu nặng (0.95)],
-  "he_so_phong_thuy": [Hệ số từ 0.95 đến 1.0. Dính cột điện/hố ga to thì 0.95, không lỗi thì 1.0]
+  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 thì 200, nhà 1 lầu thì 800],
+  "he_so_hinh_dang_lo_gioi": [Bắt buộc trả về 0.95 nếu dính ranh lộ giới hoặc tóp hậu. Trả về 1.0 nếu đẹp vuông vức],
+  "he_so_phong_thuy": [Bắt buộc trả về 0.95 nếu nhà nằm trong hẻm 2 xuyệt, hoặc có cột điện/hố ga trước nhà. Trả về 1.0 nếu hoàn hảo]
 }
 ```
 Tuyệt đối tuân thủ định dạng JSON này ở cuối câu trả lời!"""
@@ -336,6 +336,9 @@ with tab_dinh_gia:
                             st.error(f"⚠️ **Bị đè giá do Lỗi Phong Thủy / Hình Dáng (AI soi):** Nhân hệ số {(he_so_lo_gioi * he_so_pt):.2f}")
                             st.markdown(f"> 💡 *Giải thích cho Lính mới: Khách mua nhà rất kỵ lỗi phong thủy. AI đã soi thấy có cột điện, hố ga, đường đâm, hoặc Sổ Hồng bị tóp hậu. Mức phạt chuẩn để ép giá chủ nhà là từ 5% đến 10% (Hệ số 0.95 - 0.9).*")
                             st.markdown(f"📉 *Ép giá thành công: Vin vào lỗi phong thủy, ta trừ đi của chủ nhà {(tong_ly_tuong - gia_tri_thuc):.2f} Tỷ*")
+                        else:
+                            st.success(f"✅ **Không bị lỗi Phong Thủy / Hình Dáng (AI đánh giá):** Hệ số 1.0")
+                            st.markdown(f"> 💡 *Giải thích cho Lính mới: Căn nhà này Sổ Hồng đẹp, không lỗi phong thủy, hẻm đẹp nên không có cớ để ép giá thêm.*")
                     
                     st.metric(label="Thẩm Định Giá Trị Thực (Tỷ VNĐ)", value=f"{gia_tri_thuc:.1f} Tỷ - {gia_tri_thuc + 0.4:.1f} Tỷ")
                     
