@@ -317,19 +317,25 @@ with tab_dinh_gia:
                     he_so_pt = ai_params.get("he_so_phong_thuy", 1.0)
                     gia_tri_thuc = tong_ly_tuong * he_so_lo_gioi * he_so_pt
                     
-                    # 6. Bảng hiển thị bóc tách công thức
-                    with st.expander("🧮 Bảng bóc tách công thức Thẩm Định Giá (AI tính)", expanded=True):
-                        st.markdown(f"- **Diện tích áp dụng:** `{dt_thuc_te} m2` *(Từ Sổ Hồng hoặc nhập tay)*")
+                    # 6. Bảng hiển thị bóc tách công thức (Kèm giải thích đào tạo Lính Mới)
+                    with st.expander("🧮 Bảng bóc tách công thức Thẩm Định Giá (Dành cho Lính Mới)", expanded=True):
+                        st.markdown(f"- **Diện tích áp dụng:** `{dt_thuc_te} m2` *(Lấy từ Sổ Hồng AI soi được, hoặc do bạn nhập)*")
+                        
                         if he_so_dt_lon < 1.0:
-                            st.markdown(f"- **Phạt diện tích lớn (>100m2):** Giảm 10% đơn giá đất")
-                        st.markdown(f"- **Đơn giá đất thuần (Đã bóc xác nhà & phạt DT):** `{don_gia_dat_thuan * he_so_dt_lon:.1f} tr/m2`")
+                            st.markdown(f"- **Phạt diện tích lớn (>100m2):** Giảm 10% đơn giá đất. \n  > 💡 *Giải thích cho Lính mới: Đất càng to thì tổng tiền tỷ càng lớn, cực kỳ kén khách mua. Luật bất thành văn: Để trôi được nhà to thì đơn giá/m2 phải rẻ hơn nhà 40-50m2. Nếu diện tích trên 100m2, phải ép chủ nhà giảm 10% đơn giá.*")
+                            
+                        st.markdown(f"- **Đơn giá đất thuần (Đã bóc xác nhà):** `{don_gia_dat_thuan * he_so_dt_lon:.1f} tr/m2` \n  > 💡 *Giải thích: Đơn giá Bot cào trên Chợ Tốt là giá đã gộp chung (Nhà + Đất). Muốn tính chuẩn, ta phải trừ đi trung bình 10 tr/m2 tiền xác nhà cũ để tìm ra Đơn Giá Đất Nguyên Chất.*")
+                        
                         st.markdown(f"- **Tiền Đất:** `{gia_tri_dat_thuan:.2f} Tỷ`")
-                        st.markdown(f"- **Tiền Xác Nhà (AI ước tính):** `{gia_tri_xac_nha:.2f} Tỷ`")
-                        st.markdown(f"**=> Tổng Đất + Nhà (Hoàn hảo): `{tong_ly_tuong:.2f} Tỷ`**")
+                        
+                        st.markdown(f"- **Tiền Xác Nhà (AI bóc từ Sổ):** `{gia_tri_xac_nha:.2f} Tỷ` \n  > 💡 *Giải thích: AI đọc Sổ Hồng xem nhà Cấp 4 hay nhà lầu, có hoàn công không để định giá cái xác nhà. Cấp 4 thì rất rẻ (100-200tr), nhà lầu thì đắt hơn.*")
+                        
+                        st.markdown(f"**=> Tổng Đất + Nhà (Nếu đẹp hoàn hảo): `{tong_ly_tuong:.2f} Tỷ`**")
                         
                         if he_so_lo_gioi < 1.0 or he_so_pt < 1.0:
-                            st.error(f"⚠️ **Bị đè giá do Lỗi Phong Thủy/Hình Dáng (AI soi):** Nhân hệ số {(he_so_lo_gioi * he_so_pt):.2f}")
-                            st.markdown(f"📉 *Ép giá thành công: Chủ nhà bị mất {(tong_ly_tuong - gia_tri_thuc):.2f} Tỷ*")
+                            st.error(f"⚠️ **Bị đè giá do Lỗi Phong Thủy / Hình Dáng (AI soi):** Nhân hệ số {(he_so_lo_gioi * he_so_pt):.2f}")
+                            st.markdown(f"> 💡 *Giải thích cho Lính mới: Khách mua nhà rất kỵ lỗi phong thủy. AI đã soi thấy có cột điện, hố ga, đường đâm, hoặc Sổ Hồng bị tóp hậu. Mức phạt chuẩn để ép giá chủ nhà là từ 5% đến 10% (Hệ số 0.95 - 0.9).*")
+                            st.markdown(f"📉 *Ép giá thành công: Vin vào lỗi phong thủy, ta trừ đi của chủ nhà {(tong_ly_tuong - gia_tri_thuc):.2f} Tỷ*")
                     
                     st.metric(label="Thẩm Định Giá Trị Thực (Tỷ VNĐ)", value=f"{gia_tri_thuc:.1f} Tỷ - {gia_tri_thuc + 0.4:.1f} Tỷ")
                     
