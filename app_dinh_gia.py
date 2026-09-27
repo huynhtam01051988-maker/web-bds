@@ -33,9 +33,9 @@ QUAN TRỌNG NHẤT: Bắt buộc ở cuối cùng bài phân tích, bạn phả
 ```json
 {
   "dien_tich_dat_m2": [Nhập diện tích đất nếu thấy trong Sổ Hồng hoặc ảnh, nếu không thấy để 0],
-  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 thì 100, nhà 1 trệt 1 lầu thì 800, biệt thự mới thì 2000. Tính theo giá thị trường],
-  "he_so_hinh_dang_lo_gioi": [Hệ số từ 0.9 đến 1.0. Tóp hậu hoặc dính lộ giới thì 0.9 - 0.95 (vì hiện nay đền bù lộ giới rất cao nên không trừ nhiều nữa), vuông vức thì 1.0],
-  "he_so_phong_thuy": [Hệ số từ 0.9 đến 1.0. Dính cột điện/hố ga to trước nhà thì 0.95, không lỗi thì 1.0]
+  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 thì 200, nhà 1 lầu thì 800. Tính theo giá thị trường, không được ép về 0],
+  "he_so_hinh_dang_lo_gioi": [Hệ số từ 0.95 đến 1.0. HIỆN NAY ĐỀN BÙ LỘ GIỚI BẰNG GIÁ THỊ TRƯỜNG, NÊN DÍNH LỘ GIỚI VẪN TÍNH HỆ SỐ 1.0 (KHÔNG BỊ PHẠT). Chỉ trừ tiền nếu nhà bị tóp hậu nặng (0.95)],
+  "he_so_phong_thuy": [Hệ số từ 0.95 đến 1.0. Dính cột điện/hố ga to thì 0.95, không lỗi thì 1.0]
 }
 ```
 Tuyệt đối tuân thủ định dạng JSON này ở cuối câu trả lời!"""
@@ -301,7 +301,7 @@ with tab_dinh_gia:
                     # 1. Ưu tiên Diện tích từ Sổ Hồng (AI bóc được), không có thì xài diện tích user nhập
                     dt_thuc_te = ai_params["dien_tich_dat_m2"] if ai_params.get("dien_tich_dat_m2", 0) > 0 else dien_tich
                     
-                    # 2. Ép giá diện tích quá lớn (> 100m2 giảm 10% đơn giá)
+                    # 2. Ép giá diện tích lớn (Khách thực chiến báo: Diện tích > 100m2 kén khách hơn, phải giảm 10% đơn giá mới ra được giá chào chuẩn 7.5 Tỷ)
                     he_so_dt_lon = 0.9 if dt_thuc_te >= 100 else 1.0
                     
                     # 3. Bóc tách tiền Xác Nhà khỏi Đơn giá Chợ Tốt (Thường đơn giá đã gộp nhà, nên trừ đi 10tr/m2 coi như trung bình)
