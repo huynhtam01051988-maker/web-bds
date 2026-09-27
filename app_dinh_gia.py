@@ -203,8 +203,13 @@ with tab_dinh_gia:
         
         st.markdown("---")
         st.subheader("📸 Tải ảnh để MẮT THẦN AI soi lỗi")
-        uploaded_files = st.file_uploader("Kéo thả tối đa 5 ảnh vào đây", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
+        uploaded_files = st.file_uploader("Kéo thả tối đa 7 ảnh vào đây (Bao gồm Sổ Hồng + Ảnh thực tế)", accept_multiple_files=True, type=['png', 'jpg', 'jpeg'])
         
+        # Chỉ lấy tối đa 7 ảnh đầu tiên để tránh bị Google chặn do dung lượng quá lớn
+        if uploaded_files and len(uploaded_files) > 7:
+            uploaded_files = uploaded_files[:7]
+            st.warning("⚠️ Sếp tải lên quá nhiều ảnh. Hệ thống chỉ lấy 7 ảnh đầu tiên để phân tích cho nhanh nhé!")
+            
         luu_bao_cao = st.checkbox("💾 Lưu bài phân tích này vào Lịch sử (Kho mây)", value=False)
         btn = st.button("🚀 KÍCH HOẠT ĐỊNH GIÁ TOÀN DIỆN", type="primary", use_container_width=True)
 
