@@ -179,13 +179,40 @@ def fetch_mogi(keyword):
     except Exception:
         return []
 
-st.title("🤖 HỆ THỐNG ĐIỀU PHỐI & ĐỊNH GIÁ BĐS - ANH EM CÙNG TIẾN")
-st.markdown("*Công cụ tối thượng dành riêng cho Hội **Anh Em Cùng Tiến** (Tâm - Dinh - Việt - Phát)*")
-st.markdown("---")
+# --- CSS TÙY CHỈNH CHO GIAO DIỆN DASHBOARD CHUYÊN NGHIỆP ---
+st.markdown("""
+<style>
+    .stApp { background-color: #f8fafc; }
+    [data-testid="stSidebar"] { background-color: #0f172a; }
+    [data-testid="stSidebar"] h1 { color: #f8fafc !important; font-size: 1.5rem; text-align: center; border-bottom: 1px solid #334155; padding-bottom: 15px; margin-bottom: 20px;}
+    [data-testid="stSidebar"] .stRadio label { font-size: 1.1rem; font-weight: 600; padding: 12px 10px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover { background-color: #1e293b; }
+    [data-testid="stSidebar"] p { color: #cbd5e1 !important; }
+    
+    h1 { color: #1e293b; font-weight: 800; font-size: 2.2rem; text-transform: uppercase; border-bottom: 4px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
+    .subtitle { text-align: center; color: #64748b; font-size: 1.1rem; font-style: italic; margin-bottom: 30px; }
+    
+    div[data-testid="stMetric"] { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-left: 6px solid #2563eb; }
+    div[data-testid="stMetric"] label { color: #475569; font-weight: 600; font-size: 1rem; }
+    div[data-testid="stMetric"] div[data-testid="stMetricValue"] { color: #0f172a; font-weight: 800; font-size: 2rem; }
+    
+    .streamlit-expanderHeader { background-color: #e0e7ff !important; color: #1e40af !important; border-radius: 8px; font-weight: 700; font-size: 1.1rem; }
+    div[data-testid="stForm"] { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+</style>
+""", unsafe_allow_html=True)
 
-tab_dinh_gia, tab_quy_hoach, tab_quan_ly, tab_phap_ly, tab_dao_tao = st.tabs(["📊 1. LÕI AI ĐỊNH GIÁ", "🗺️ 2. SOI QUY HOẠCH", "🤝 3. QUẢN LÝ TEAM", "⚖️ 4. PHÁP LÝ", "🎓 5. ĐÀO TẠO NEWBIE"])
+st.title("🏢 HỆ THỐNG CRM & QUẢN LÝ BĐS TẬP TRUNG")
+st.markdown("<div class='subtitle'>Bản quyền Hệ thống thuộc về Hội <b>Anh Em Cùng Tiến</b> (Tâm - Dinh - Việt - Phát)</div>", unsafe_allow_html=True)
 
-with tab_dinh_gia:
+st.sidebar.markdown("<h1>⚙️ BẢNG ĐIỀU KHIỂN</h1>", unsafe_allow_html=True)
+menu = st.sidebar.radio(
+    "CHỌN TÍNH NĂNG:",
+    ["📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH", "🗺️ 2. KIỂM TRA QUY HOẠCH", "🤝 3. CRM & QUẢN LÝ RỔ HÀNG", "⚖️ 4. TỪ ĐIỂN PHÁP LÝ", "🎓 5. HỌC VIỆN MÔI GIỚI"]
+)
+st.sidebar.markdown("---")
+st.sidebar.info("Hệ thống độc quyền tích hợp AI phân tích Sổ Hồng và dữ liệu thị trường theo thời gian thực.")
+
+if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
     col1, col2 = st.columns([1, 1.5])
 
     with col1:
@@ -514,7 +541,7 @@ with tab_dinh_gia:
         except:
             st.write("Chưa có báo cáo nào được lưu.")
 
-with tab_quy_hoach:
+elif menu == "🗺️ 2. KIỂM TRA QUY HOẠCH":
     st.header("🗺️ CỔNG TRA CỨU QUY HOẠCH CHÍNH THỨC (TP.HCM)")
     st.markdown("---")
     
@@ -530,7 +557,7 @@ with tab_quy_hoach:
 
 
 # --- TAB 3: CRM HỆ THỐNG QUẢN LÝ ---
-with tab_quan_ly:
+elif menu == "🤝 3. CRM & QUẢN LÝ RỔ HÀNG":
     st.header("🤝 HỆ THỐNG QUẢN LÝ TỪNG SẢN PHẨM (MINI CRM)")
     st.markdown("---")
     
@@ -806,7 +833,7 @@ Yêu cầu thêm:
                         st.experimental_rerun()
 
 # --- TAB 4: QUY TRÌNH & PHÁP LÝ ---
-with tab_phap_ly:
+elif menu == "⚖️ 4. TỪ ĐIỂN PHÁP LÝ":
     st.header("⚖️ CẨM NANG PHÁP LÝ & QUY TRÌNH GIAO DỊCH (CẬP NHẬT LUẬT MỚI 2024)")
     st.markdown("---")
     
@@ -845,7 +872,7 @@ with tab_phap_ly:
         st.error("**BẪY 4: 'Kênh Giá' thay vì nhận Hoa Hồng**\n\nChủ gửi 5 tỷ, kê lên 5.5 tỷ để ăn khúc giữa là ĐIỀU TỐI KỴ. Luật KD BĐS 2023 cấm cò mồi hoạt động kiểu này. Phải minh bạch giá thật 100% với cả 2 bên và nhận Hoa hồng đúng Hợp Đồng Môi Giới.")
 
 # --- TAB 5: ĐÀO TẠO NEWBIE ---
-with tab_dao_tao:
+elif menu == "🎓 5. HỌC VIỆN MÔI GIỚI":
     st.header("🎓 TRƯỜNG ĐÀO TẠO CÒ ĐẤT THỰC CHIẾN (DÀNH CHO ANH EM MỚI)")
     st.markdown("---")
     
