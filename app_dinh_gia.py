@@ -22,20 +22,23 @@ st.set_page_config(page_title="Hệ Thống BĐS - Anh Em Cùng Tiến", layout=
 # Cấu hình API Key thật của sếp (Đã chuyển lên trên)
 
 def analyze_images(uploaded_files):
-    prompt_text = """Đóng vai một Chuyên gia Thẩm định giá Bất Động Sản thực chiến.
+    prompt_text = """Đóng vai một Chuyên gia Thẩm định giá Bất Động Sản thực chiến kiêm Siêu Cò lão luyện.
 Hãy soi thật kỹ các bức ảnh này (đặc biệt chú ý nếu có ảnh Sổ Hồng/Sơ đồ thửa đất) và đưa ra 1 Bản Phân Tích Thật Sâu Sắc:
-1. 🏠 KIẾN TRÚC & HIỆN TRẠNG: Đánh giá kết cấu, mức độ xuống cấp. Nếu có Sổ Hồng, hãy đọc chính xác Diện tích công nhận, Cấp nhà.
-2. 💎 ĐIỂM ĂN TIỀN: Ưu điểm vượt trội (Vị trí, mặt tiền, hẻm, hình dáng đất vuông vức).
-3. 🚨 TỬ HUYỆT (ĐIỂM TRỪ): Bới lông tìm vết! Đọc Sơ đồ Sổ Hồng xem có bị Tóp hậu không? Có bị cắt Ranh Lộ Giới nặng không? Nhìn ảnh thực tế xem có dính cột điện, hố ga, đường đâm không?
-4. 💡 CHIẾN LƯỢC BÁN: Đưa ra lời khuyên thực chiến cho Sale.
+1. 🏠 KIẾN TRÚC & HIỆN TRẠNG: Đánh giá kết cấu, mức độ xuống cấp. Nếu có Sổ Hồng, hãy đọc chính xác Diện tích công nhận, Bề ngang, Diện tích sàn, Cấp nhà.
+2. 💎 ĐIỂM ĂN TIỀN: Ưu điểm vượt trội (Vị trí, mặt tiền, hẻm, hình dáng đất vuông vức, lợi thế thương mại/dòng tiền nếu đang cho thuê kinh doanh).
+3. 🚨 TỬ HUYỆT (ĐIỂM TRỪ): Bới lông tìm vết! Đọc Sơ đồ Sổ Hồng xem có bị Tóp hậu không? Có bị cắt Ranh Lộ Giới nặng không? Nhìn ảnh thực tế xem có dính cột điện, hố ga, đường đâm, dây điện chằng chịt không?
+4. 💡 CHIẾN LƯỢC BÁN: Đưa ra lời khuyên thực chiến cho Môi giới tư vấn chủ nhà nhận ký gửi.
 
 QUAN TRỌNG NHẤT: Bắt buộc ở cuối cùng bài phân tích, bạn phải xuất ra một khối dữ liệu JSON y hệt định dạng sau để phần mềm tự động lấy số liệu tính toán (chỉ xuất JSON, đặt trong ```json ... ```):
 ```json
 {
   "dien_tich_dat_m2": [Nhập diện tích đất nếu thấy trong Sổ Hồng hoặc ảnh, nếu không thấy để 0],
-  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 thì 200, nhà 1 lầu thì 800],
-  "he_so_hinh_dang_lo_gioi": [Bắt buộc trả về 0.95 nếu dính ranh lộ giới hoặc tóp hậu. Trả về 1.0 nếu đẹp vuông vức],
-  "he_so_phong_thuy": [Bắt buộc trả về 0.95 nếu nhà nằm trong hẻm 2 xuyệt, hoặc có cột điện/hố ga trước nhà. Trả về 1.0 nếu hoàn hảo]
+  "be_ngang_m": [Bề ngang mặt tiền đất theo sổ nếu có, nếu không rõ để 4.0],
+  "dien_tich_san_m2": [Diện tích sàn xây dựng nếu thấy trên sổ hoặc ước tính, nếu không để 0],
+  "xac_nha_trieu_vnd": [Ước tính giá trị xác nhà hiện tại bằng Triệu VNĐ. VD: nhà cấp 4 cũ thì 150-250, 1 trệt 1 lầu thì 400-600, nhà 3-4 tấm thì 800-1500],
+  "he_so_hinh_dang_lo_gioi": [0.85 nếu tóp hậu nặng/lộ giới sâu; 0.95 nếu dính ranh lộ giới hoặc tóp hậu nhẹ; 1.0 nếu đẹp vuông vức],
+  "he_so_phong_thuy": [0.88 nếu đường đâm/ngã ba; 0.92-0.95 nếu dính cột điện/trạm điện/hố ga trước nhà/hẻm 2 xẹt; 1.0 nếu hoàn hảo],
+  "he_so_thuong_mai": [1.05 nếu có mặt bằng kinh doanh hoặc có hợp đồng thuê sẵn thương hiệu/dòng tiền; 1.0 nếu thuần để ở]
 }
 ```
 Tuyệt đối tuân thủ định dạng JSON này ở cuối câu trả lời!"""
@@ -224,9 +227,12 @@ with tab_dinh_gia:
                     st.subheader("👁️ 1. Phân tích Hiện trạng (Vision AI Thật)")
                     ai_params = {
                         "dien_tich_dat_m2": 0,
+                        "be_ngang_m": 4.0,
+                        "dien_tich_san_m2": 0,
                         "xac_nha_trieu_vnd": 0,
                         "he_so_hinh_dang_lo_gioi": 1.0,
-                        "he_so_phong_thuy": 1.0
+                        "he_so_phong_thuy": 1.0,
+                        "he_so_thuong_mai": 1.0
                     }
                     if uploaded_files:
                         with st.spinner("🧠 AI đang quét từng chi tiết trong ảnh và Sổ Hồng..."):
@@ -280,76 +286,155 @@ with tab_dinh_gia:
                         if count_sach > 0:
                             don_gia_dat = sum_don_gia_sach / count_sach
                             st.success(f"**=> Đơn giá nền khu vực (CHỈ TÍNH NHÀ SỔ HỒNG SẠCH): {don_gia_dat:.1f} Triệu/m2**")
-                            
-                            # ĐIỀU CHỈNH THEO HỆ SỐ VỊ TRÍ
-                            if loai_vi_tri == "Mặt Tiền":
-                                don_gia_dat = don_gia_dat * 1.35
-                                st.info(f"📈 Hệ số Vị Trí: **Mặt Tiền (+35%)** -> Nâng đơn giá lên **{don_gia_dat:.1f} Triệu/m2**")
-                            elif loai_vi_tri == "Hẻm Ba Gác / Xe Máy":
-                                don_gia_dat = don_gia_dat * 0.85
-                                st.warning(f"📉 Hệ số Vị Trí: **Hẻm Nhỏ (-15%)** -> Giảm đơn giá xuống **{don_gia_dat:.1f} Triệu/m2**")
-                            else:
-                                st.info(f"💡 Hệ số Vị Trí: **Hẻm Xe Hơi (Mặc định)** -> Giữ nguyên đơn giá.")
+                            p_base = don_gia_dat
                         else:
-                            st.warning("⚠️ Toàn bộ nhà tìm thấy đều là Vi Bằng/Sổ chung. Đang dùng đơn giá dự phòng 90tr/m2 để tính toán.")
-                            don_gia_dat = 90.0
+                            st.warning("⚠️ Toàn bộ nhà tìm thấy đều là Vi Bằng/Sổ chung. Đang dùng đơn giá dự phòng 80tr/m2 để tính toán.")
+                            don_gia_dat = 80.0
+                            p_base = 80.0
                     else:
                         st.warning("⚠️ Bot không tìm thấy tin rao bán nào khớp với từ khóa này. Đang dùng giá dự phòng.")
+                        p_base = 80.0
                         
-                    st.subheader("💰 3. CHỐT GIÁ & CHIẾN LƯỢC TỪ SIÊU CÒ")
+                    st.subheader("💰 3. BỘ TIÊU CHUẨN ĐỊNH GIÁ & CHIẾN LƯỢC MÔI GIỚI")
                     
-                    # 1. Ưu tiên Diện tích từ Sổ Hồng (AI bóc được), không có thì xài diện tích user nhập
+                    # 1. Diện tích áp dụng (Ưu tiên Sổ Hồng AI bóc được)
                     dt_thuc_te = ai_params["dien_tich_dat_m2"] if ai_params.get("dien_tich_dat_m2", 0) > 0 else dien_tich
                     
-                    # 2. Ép giá diện tích lớn (Khách thực chiến báo: Diện tích > 100m2 kén khách hơn, phải giảm 10% đơn giá mới ra được giá chào chuẩn 7.5 Tỷ)
-                    he_so_dt_lon = 0.9 if dt_thuc_te >= 100 else 1.0
+                    # 2. Đơn giá đất cơ sở thuần (Bóc tách tiền xác nhà cũ trung bình 10tr/m2 khỏi tin rao)
+                    p_base_thuan = max(p_base - 10.0, 30.0) if p_base > 30 else p_base
                     
-                    # 3. Bóc tách tiền Xác Nhà khỏi Đơn giá Chợ Tốt (Thường đơn giá đã gộp nhà, nên trừ đi 10tr/m2 coi như trung bình)
-                    don_gia_dat_thuan = don_gia_dat - 10.0 if don_gia_dat > 30 else don_gia_dat
-                    
-                    # 4. Tính toán
-                    gia_tri_dat_thuan = (dt_thuc_te * don_gia_dat_thuan * he_so_dt_lon) / 1000
-                    gia_tri_xac_nha = ai_params.get("xac_nha_trieu_vnd", 0) / 1000
-                    tong_ly_tuong = gia_tri_dat_thuan + gia_tri_xac_nha
-                    
-                    # 5. Phạt lỗi Phong thủy & Lộ giới (AI đánh giá)
-                    he_so_lo_gioi = ai_params.get("he_so_hinh_dang_lo_gioi", 1.0)
-                    he_so_pt = ai_params.get("he_so_phong_thuy", 1.0)
-                    gia_tri_thuc = tong_ly_tuong * he_so_lo_gioi * he_so_pt
-                    
-                    # 6. Bảng hiển thị bóc tách công thức (Kèm giải thích đào tạo Lính Mới)
-                    with st.expander("🧮 Bảng bóc tách công thức Thẩm Định Giá (Dành cho Lính Mới)", expanded=True):
-                        st.markdown(f"- **Diện tích áp dụng:** `{dt_thuc_te} m2` *(Lấy từ Sổ Hồng AI soi được, hoặc do bạn nhập)*")
-                        
-                        if he_so_dt_lon < 1.0:
-                            st.markdown(f"- **Phạt diện tích lớn (>100m2):** Giảm 10% đơn giá đất. \n  > 💡 *Giải thích cho Lính mới: Đất càng to thì tổng tiền tỷ càng lớn, cực kỳ kén khách mua. Luật bất thành văn: Để trôi được nhà to thì đơn giá/m2 phải rẻ hơn nhà 40-50m2. Nếu diện tích trên 100m2, phải ép chủ nhà giảm 10% đơn giá.*")
-                            
-                        st.markdown(f"- **Đơn giá đất thuần (Đã bóc xác nhà):** `{don_gia_dat_thuan * he_so_dt_lon:.1f} tr/m2` \n  > 💡 *Giải thích: Đơn giá Bot cào trên Chợ Tốt là giá đã gộp chung (Nhà + Đất). Muốn tính chuẩn, ta phải trừ đi trung bình 10 tr/m2 tiền xác nhà cũ để tìm ra Đơn Giá Đất Nguyên Chất.*")
-                        
-                        st.markdown(f"- **Tiền Đất:** `{gia_tri_dat_thuan:.2f} Tỷ`")
-                        
-                        st.markdown(f"- **Tiền Xác Nhà (AI bóc từ Sổ):** `{gia_tri_xac_nha:.2f} Tỷ` \n  > 💡 *Giải thích: AI đọc Sổ Hồng xem nhà Cấp 4 hay nhà lầu, có hoàn công không để định giá cái xác nhà. Cấp 4 thì rất rẻ (100-200tr), nhà lầu thì đắt hơn.*")
-                        
-                        st.markdown(f"**=> Tổng Đất + Nhà (Nếu đẹp hoàn hảo): `{tong_ly_tuong:.2f} Tỷ`**")
-                        
-                        if he_so_lo_gioi < 1.0 or he_so_pt < 1.0:
-                            st.error(f"⚠️ **Bị đè giá do Lỗi Phong Thủy / Hình Dáng (AI soi):** Nhân hệ số {(he_so_lo_gioi * he_so_pt):.2f}")
-                            st.markdown(f"> 💡 *Giải thích cho Lính mới: Khách mua nhà rất kỵ lỗi phong thủy. AI đã soi thấy có cột điện, hố ga, đường đâm, hoặc Sổ Hồng bị tóp hậu. Mức phạt chuẩn để ép giá chủ nhà là từ 5% đến 10% (Hệ số 0.95 - 0.9).*")
-                            st.markdown(f"📉 *Ép giá thành công: Vin vào lỗi phong thủy, ta trừ đi của chủ nhà {(tong_ly_tuong - gia_tri_thuc):.2f} Tỷ*")
-                        else:
-                            st.success(f"✅ **Không bị lỗi Phong Thủy / Hình Dáng (AI đánh giá):** Hệ số 1.0")
-                            st.markdown(f"> 💡 *Giải thích cho Lính mới: Căn nhà này Sổ Hồng đẹp, không lỗi phong thủy, hẻm đẹp nên không có cớ để ép giá thêm.*")
-                    
-                    st.metric(label="Thẩm Định Giá Trị Thực (Tỷ VNĐ)", value=f"{gia_tri_thuc:.1f} Tỷ - {gia_tri_thuc + 0.4:.1f} Tỷ")
-                    
-                    if gia_chu_keu > 0:
-                        lech = gia_chu_keu - gia_tri_thuc
-                        if lech > 0.5:
-                            st.error(f"❌ **Chiến lược:** Chủ đang ngáo giá (Chênh {lech:.1f} Tỷ). Lấy Bảng bóc tách AI ở trên cộng link nhà đối thủ ra đập vào mặt để dìm giá xuống **{gia_tri_thuc - 0.5:.1f} Tỷ**.")
-                        else:
-                            st.success(f"✅ **Chiến lược:** Chủ rao sát giá thị trường. Khen chủ nhà 1 câu rồi chốt hạ quanh mốc **{gia_tri_thuc:.1f} Tỷ**.")
+                    # 3. TÍNH TOÁN BỘ 6 HỆ SỐ ĐIỀU CHỈNH ĐẤT (K1 -> K6)
+                    # K1: Vị trí hẻm / mặt tiền
+                    if loai_vi_tri == "Mặt Tiền":
+                        k1_vitri = 1.35
+                        k1_desc = "Mặt tiền kinh doanh (+35%)"
+                    elif loai_vi_tri == "Hẻm Ba Gác / Xe Máy":
+                        k1_vitri = 0.85
+                        k1_desc = "Hẻm nhỏ / Ba gác (-15%)"
                     else:
-                        st.info(f"💡 Dùng bảng tính AI trên để ném giá mồi ở mức **{gia_tri_thuc - 0.4:.1f} Tỷ** xem thái độ chủ nhà.")
+                        k1_vitri = 1.00
+                        k1_desc = "Hẻm xe hơi chuẩn (1.0)"
+                        
+                    # K2: Quy mô diện tích
+                    if dt_thuc_te < 40:
+                        k2_dientich = 1.05
+                        k2_desc = "Diện tích nhỏ <40m2 (+5%)"
+                    elif dt_thuc_te <= 70:
+                        k2_dientich = 1.00
+                        k2_desc = "Diện tích chuẩn 40-70m2 (1.0)"
+                    elif dt_thuc_te <= 100:
+                        k2_dientich = 0.95
+                        k2_desc = "Diện tích vừa 70-100m2 (-5%)"
+                    else:
+                        k2_dientich = 0.90
+                        k2_desc = "Diện tích lớn >100m2 (-10% do kén khách)"
+                        
+                    # K3: Bề ngang mặt tiền đất
+                    be_ngang = ai_params.get("be_ngang_m", 4.0)
+                    if be_ngang >= 5.0:
+                        k3_ngang = 1.05
+                        k3_desc = f"Bề ngang rộng {be_ngang}m (+5%)"
+                    elif be_ngang >= 4.0:
+                        k3_ngang = 1.00
+                        k3_desc = f"Bề ngang chuẩn {be_ngang}m (1.0)"
+                    elif be_ngang >= 3.3:
+                        k3_ngang = 0.95
+                        k3_desc = f"Bề ngang hẹp vừa {be_ngang}m (-5%)"
+                    else:
+                        k3_ngang = 0.88
+                        k3_desc = f"Bề ngang hẹp <3.3m ({be_ngang}m, -12%)"
+                        
+                    # K4: Hình thể thửa đất & Ranh Lộ giới
+                    k4_logioi = ai_params.get("he_so_hinh_dang_lo_gioi", 1.0)
+                    k4_desc = "Vuông vức (1.0)" if k4_logioi >= 1.0 else f"Tóp hậu / Dính ranh lộ giới ({k4_logioi:.2f})"
+                    
+                    # K5: Phong thủy & Hạ tầng trước nhà
+                    k5_phongthuy = ai_params.get("he_so_phong_thuy", 1.0)
+                    k5_desc = "Sạch sẽ, không lỗi (1.0)" if k5_phongthuy >= 1.0 else f"Cột điện / Hố ga / Đường đâm ({k5_phongthuy:.2f})"
+                    
+                    # K6: Lợi thế thương mại & Dòng tiền cho thuê
+                    k6_thuongmai = ai_params.get("he_so_thuong_mai", 1.0)
+                    k6_desc = "Có hợp đồng thuê / Dòng tiền (+5%)" if k6_thuongmai > 1.0 else "Nhà ở thuần túy (1.0)"
+                    
+                    # TỔNG HỢP HỆ SỐ ĐẤT & GIÁ TRỊ ĐẤT
+                    k_tong_dat = k1_vitri * k2_dientich * k3_ngang * k4_logioi * k5_phongthuy * k6_thuongmai
+                    don_gia_dat_thuc_te = p_base_thuan * k_tong_dat
+                    gia_tri_dat_thuc_te = (dt_thuc_te * don_gia_dat_thuc_te) / 1000.0 # Tỷ đồng
+                    
+                    # 4. GIÁ TRỊ XÁC NHÀ (AI bóc từ sổ hoặc tính theo kết cấu nhập)
+                    gia_tri_xac_nha = ai_params.get("xac_nha_trieu_vnd", 0) / 1000.0 # Tỷ đồng
+                    if gia_tri_xac_nha == 0 and ket_cau:
+                        kc_lower = ket_cau.lower()
+                        if "cấp 4" in kc_lower or "cap 4" in kc_lower:
+                            gia_tri_xac_nha = 0.20
+                        elif "1 lầu" in kc_lower or "2 tầng" in kc_lower or "trệt lầu" in kc_lower:
+                            gia_tri_xac_nha = 0.50
+                        elif "2 lầu" in kc_lower or "3 tầng" in kc_lower or "3 lầu" in kc_lower:
+                            gia_tri_xac_nha = 0.80
+                            
+                    # 5. TỔNG GIÁ TRỊ THỊ TRƯỜNG CHUẨN (FAIR VALUE)
+                    gia_tri_chuan = gia_tri_dat_thuc_te + gia_tri_xac_nha
+                    
+                    # 6. BỘ 3 MỨC GIÁ CHIẾN LƯỢC CHO MÔI GIỚI
+                    gia_chot = round(gia_tri_chuan, 2)
+                    gia_rao = round(gia_chot * 1.05, 2)  # Tạo khoảng bớt lộc 5%
+                    gia_gap = round(gia_chot * 0.94, 2)  # Bán gấp cho chủ kẹt tiền
+                    
+                    # 7. BẢNG TÍNH THỰC THU CHO CHỦ NHÀ (NET CASH)
+                    thue_tncn = gia_chot * 0.02
+                    phi_moi_gioi = gia_chot * 0.02 # Hoa hồng 2% cho team
+                    phi_giay_to = 0.02 # Dự phòng 20tr công chứng & bớt lộc
+                    tien_thuc_thu = gia_chot - thue_tncn - phi_moi_gioi - phi_giay_to
+                    
+                    # HIỂN THỊ 3 METRIC CHIẾN LƯỢC MÔI GIỚI
+                    m_col1, m_col2, m_col3 = st.columns(3)
+                    with m_col1:
+                        st.metric("📢 Giá Rao Bán (Đăng tin)", f"{gia_rao:.2f} Tỷ", help="Giá chào thị trường, có sẵn 5% biên độ bớt lộc đàm phán.")
+                    with m_col2:
+                        st.metric("🤝 Giá Chốt Hợp Lý", f"{gia_chot:.2f} Tỷ", help="Giá trị thị trường chuẩn, khách thiện chí đàm phán về mốc này là chốt.")
+                    with m_col3:
+                        st.metric("💰 Chủ Thực Thu (Net)", f"{tien_thuc_thu:.2f} Tỷ", help="Số tiền mặt cầm về sau khi trừ Thuế TNCN 2%, Hoa hồng 2% và giấy tờ.")
+                        
+                    # BẢNG BÓC TÁCH CÔNG THỨC 5 BƯỚC CHI TIẾT
+                    with st.expander("🧮 BẢNG BÓC TÁCH ĐỊNH GIÁ ĐA TIÊU CHÍ 5 BƯỚC (ĐÀO TẠO & TƯ VẤN CHỦ NHÀ)", expanded=True):
+                        st.markdown(f"### 📍 BƯỚC 1 & 2: Định giá Đất ({dt_thuc_te} m2)")
+                        st.markdown(f"- **Đơn giá cơ sở khu vực (P_base thuần):** `{p_base_thuan:.1f} tr/m2` *(sau khi bóc tách xác nhà khỏi tin cào)*")
+                        st.markdown(f"- **1. Vị trí ({k1_desc}):** `x {k1_vitri:.2f}`")
+                        st.markdown(f"- **2. Quy mô diện tích ({k2_desc}):** `x {k2_dientich:.2f}`")
+                        st.markdown(f"- **3. Bề ngang mặt tiền ({k3_desc}):** `x {k3_ngang:.2f}`")
+                        st.markdown(f"- **4. Hình thể & Lộ giới ({k4_desc}):** `x {k4_logioi:.2f}`")
+                        st.markdown(f"- **5. Phong thủy & Hạ tầng ({k5_desc}):** `x {k5_phongthuy:.2f}`")
+                        st.markdown(f"- **6. Thương mại / Dòng tiền ({k6_desc}):** `x {k6_thuongmai:.2f}`")
+                        st.markdown(f"**=> Hệ số tổng hợp đất:** `{k_tong_dat:.3f}` | **Đơn giá đất thực tế:** `{don_gia_dat_thuc_te:.1f} tr/m2`")
+                        st.markdown(f"💵 **Tiền Đất:** `{gia_tri_dat_thuc_te:.2f} Tỷ đồng`")
+                        
+                        st.markdown("---")
+                        st.markdown(f"### 🏠 BƯỚC 3: Định giá Xác Nhà")
+                        st.markdown(f"- **Tiền xác nhà hoàn công:** `{gia_tri_xac_nha:.2f} Tỷ đồng` *(tính theo cấp nhà và khấu hao)*")
+                        
+                        st.markdown("---")
+                        st.markdown(f"### 🎯 BƯỚC 4 & 5: Tổng Hợp & Bảng Tính Thực Thu (Net Cash)")
+                        st.markdown(f"- **Tổng giá trị tài sản chuẩn:** `{gia_tri_chuan:.2f} Tỷ đồng`")
+                        st.markdown(f"- **Giá bán gấp (Thanh khoản nhanh):** `{gia_gap:.2f} Tỷ đồng`")
+                        st.markdown(f"| Khoản mục | Tỷ lệ / Cách tính | Số tiền (Tính trên giá chốt {gia_chot:.2f} Tỷ) |")
+                        st.markdown(f"| :--- | :--- | :--- |")
+                        st.markdown(f"| **Giá chốt hợp đồng** | Giá thị trường chuẩn | **{gia_chot:.2f} Tỷ** |")
+                        st.markdown(f"| **Thuế Thu nhập cá nhân (TNCN)** | 2% trên giá bán | Trừ **{thue_tncn*1000:.0f} Triệu** |")
+                        st.markdown(f"| **Phí môi giới cho team** | 2% hoa hồng | Trừ **{phi_moi_gioi*1000:.0f} Triệu** |")
+                        st.markdown(f"| **Phí công chứng & bớt lộc** | Dự phòng hồ sơ | Trừ **{phi_giay_to*1000:.0f} Triệu** |")
+                        st.markdown(f"| **👉 TIỀN THỰC THU CỦA CHỦ NHÀ** | **= Giá bán - Các chi phí trên** | **{tien_thuc_thu:.2f} Tỷ đồng (Net)** |")
+                        
+                    # SO SÁNH VỚI GIÁ CHỦ KÊU NẾU CÓ
+                    if gia_chu_keu > 0:
+                        lech = gia_chu_keu - gia_chot
+                        if lech > 0.4:
+                            st.error(f"❌ **Phân tích:** Chủ đang rao cao hơn thị trường **{lech:.2f} Tỷ**. Dùng bảng bóc tách 6 hệ số trên để phân tích cho chủ hiểu, khuyên chủ hạ giá rao về **{gia_rao:.2f} Tỷ** để thu hút khách.")
+                        elif lech < -0.3:
+                            st.warning(f"🔥 **Phân tích:** Chủ đang rao giá ngộp (Rẻ hơn thị trường {abs(lech):.2f} Tỷ). Căn này tiềm năng thanh khoản siêu tốc, chốt cọc ngay kẻo lỡ!")
+                        else:
+                            st.success(f"✅ **Phân tích:** Chủ rao rất sát giá thị trường ({gia_chu_keu:.2f} Tỷ vs {gia_chot:.2f} Tỷ chuẩn). Đàm phán bớt nhẹ lộc là chốt cọc được ngay.")
+                    else:
+                        st.info(f"💡 Tư vấn chủ nhà nhận ký gửi: Đề xuất chủ chào bán ở mức **{gia_rao:.2f} Tỷ**, thương lượng chốt về mốc **{gia_chot:.2f} Tỷ**, chủ thực thu về tay trọn vẹn **{tien_thuc_thu:.2f} Tỷ**.")
                         
                     # LƯU THEO TÙY CHỌN CỦA USER (ĐÃ BAO GỒM GIÁ)
                     if luu_bao_cao:
@@ -358,8 +443,8 @@ with tab_dinh_gia:
                                 ai_analysis = "*Không tải ảnh lên để phân tích.*"
                                 
                             if "Lỗi toàn tập" not in ai_analysis:
-                                gia_tien_str = f"### 💰 ĐỊNH GIÁ TRỊ THỰC: {gia_tri_thuc:.1f} Tỷ - {gia_tri_thuc + 0.4:.1f} Tỷ\n\n"
-                                bang_tinh_str = f"**Bảng bóc tách AI:**\n- Diện tích: {dt_thuc_te} m2\n- Đơn giá đất thuần: {don_gia_dat_thuan:.1f} tr/m2\n- Giá trị nhà: {gia_tri_xac_nha:.2f} Tỷ\n- Hệ số Phong thủy/Lộ giới: {(he_so_lo_gioi * he_so_pt):.2f}\n\n"
+                                gia_tien_str = f"### 💰 ĐỊNH GIÁ: Rao {gia_rao:.2f} Tỷ | Chốt {gia_chot:.2f} Tỷ | Chủ Thực Thu {tien_thuc_thu:.2f} Tỷ\n\n"
+                                bang_tinh_str = f"**Bảng bóc tách 5 bước:**\n- Diện tích: {dt_thuc_te} m2\n- Đơn giá đất thực tế: {don_gia_dat_thuc_te:.1f} tr/m2 (Hệ số K: {k_tong_dat:.3f})\n- Tiền đất: {gia_tri_dat_thuc_te:.2f} Tỷ | Xác nhà: {gia_tri_xac_nha:.2f} Tỷ\n- Chủ thực thu (Net): {tien_thuc_thu:.2f} Tỷ\n\n"
                                 full_report = gia_tien_str + bang_tinh_str + "---\n\n" + ai_analysis
                                 
                                 ts = int(time.time())
