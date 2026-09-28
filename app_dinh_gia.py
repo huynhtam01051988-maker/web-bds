@@ -189,15 +189,75 @@ st.markdown("""
     [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover { background-color: #1e293b; }
     [data-testid="stSidebar"] p { color: #cbd5e1 !important; }
     
+    /* Main Title */
     h1 { color: #1e293b; font-weight: 800; font-size: 2.2rem; text-transform: uppercase; border-bottom: 4px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
     .subtitle { text-align: center; color: #64748b; font-size: 1.1rem; font-style: italic; margin-bottom: 30px; }
     
-    div[data-testid="stMetric"] { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-left: 6px solid #2563eb; }
+    /* Card Columns Layout */
+    [data-testid="column"] {
+        background-color: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        border: 1px solid #e2e8f0;
+        margin-bottom: 15px;
+    }
+    
+    /* Column Subheaders */
+    [data-testid="column"] h2 {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 1.3rem;
+        margin-top: -10px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Input Fields Styling */
+    div[data-baseweb="input"] > div, 
+    div[data-baseweb="select"] > div {
+        background-color: #f1f5f9;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        transition: all 0.2s ease;
+    }
+    div[data-baseweb="input"] > div:focus-within, 
+    div[data-baseweb="select"] > div:focus-within {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+    
+    /* Labels */
+    .stTextInput label, .stSelectbox label, .stNumberInput label {
+        color: #334155 !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        margin-bottom: 5px;
+    }
+    
+    /* Metrics */
+    div[data-testid="stMetric"] { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-left: 6px solid #2563eb; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
     div[data-testid="stMetric"] label { color: #475569; font-weight: 600; font-size: 1rem; }
     div[data-testid="stMetric"] div[data-testid="stMetricValue"] { color: #0f172a; font-weight: 800; font-size: 2rem; }
     
+    /* Expanders */
     .streamlit-expanderHeader { background-color: #e0e7ff !important; color: #1e40af !important; border-radius: 8px; font-weight: 700; font-size: 1.1rem; }
-    div[data-testid="stForm"] { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    
+    /* Buttons */
+    .stButton > button {
+        border-radius: 8px;
+        font-weight: 700;
+        padding: 10px 20px;
+        border: none;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
+    }
 </style>
 """, unsafe_allow_html=True)
 
