@@ -71,7 +71,7 @@ Tuyệt đối tuân thủ định dạng JSON này ở cuối câu trả lời!
     except Exception as e:
         return f"Lỗi phân tích ảnh: {e}"
 
-def fetch_chotot(keyword):
+def fetch_chotot(keyword, loai_vi_tri):
     try:
         encoded_kw = urllib.parse.quote(keyword)
         # cg=1020 chuyên trang Nhà Ở (Nhà Phố)
@@ -115,7 +115,7 @@ def fetch_chotot(keyword):
     except Exception:
         return []
 
-def fetch_mogi(keyword):
+def fetch_mogi(keyword, loai_vi_tri):
     try:
         url = f"https://mogi.vn/mua-nha-dat?q={urllib.parse.quote(keyword)}"
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
@@ -182,64 +182,63 @@ def fetch_mogi(keyword):
 # --- CSS TÙY CHỈNH CHO GIAO DIỆN DASHBOARD CHUYÊN NGHIỆP ---
 st.markdown("""
 <style>
-    /* 1. ĐỔI FONT CHỮ SANG MONTSERRAT (CỰC KỲ SANG TRỌNG) */
+    /* 1. DOi FONT CHU SANG MONTSERRAT */
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
     
     html, body, [class*="css"], [class*="st-"] {
         font-family: 'Montserrat', sans-serif !important;
+        color: #111111 !important;
     }
 
-    /* 2. HÌNH NỀN BẤT ĐỘNG SẢN CHUYÊN NGHIỆP */
+    /* 2. HINH NEN BAT DONG SAN TONE MATCHA */
     .stApp { 
-        background: linear-gradient(rgba(240, 244, 248, 0.90), rgba(240, 244, 248, 0.95)), 
-                    url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop") 
+        background: linear-gradient(rgba(238, 247, 238, 0.93), rgba(238, 247, 238, 0.97)), 
+                    url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop") 
                     center/cover no-repeat fixed !important;
     }
     
-    /* 3. SIDEBAR TỐI MÀU QUYỀN LỰC */
-    [data-testid="stSidebar"] { background-color: #0f172a !important; }
-    [data-testid="stSidebar"] h1 { color: #38bdf8 !important; font-size: 1.6rem; text-align: center; border-bottom: 2px solid #334155; padding-bottom: 15px; margin-bottom: 20px;}
-    [data-testid="stSidebar"] .stRadio label { font-size: 1.1rem; font-weight: 600; padding: 12px 10px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; color: #f8fafc !important;}
-    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover { background-color: #1e293b !important; color: #38bdf8 !important; }
-    [data-testid="stSidebar"] p { color: #cbd5e1 !important; }
+    /* 3. SIDEBAR TONE MATCHA DEEP */
+    [data-testid="stSidebar"] { background-color: #2e4431 !important; }
+    [data-testid="stSidebar"] h1 { color: #a5d6a7 !important; font-size: 1.6rem; text-align: center; border-bottom: 2px solid #4a684e; padding-bottom: 15px; margin-bottom: 20px;}
+    [data-testid="stSidebar"] .stRadio label { font-size: 1.1rem; font-weight: 600; padding: 12px 10px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; color: #f1f8f1 !important;}
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover { background-color: #436347 !important; color: #c8e6c9 !important; }
+    [data-testid="stSidebar"] p { color: #c8e6c9 !important; }
     
-    /* 4. TIÊU ĐỀ CHÍNH */
-    h1 { color: #1e293b; font-weight: 800; font-size: 2.5rem; text-transform: uppercase; border-bottom: 4px solid #2563eb; padding-bottom: 10px; margin-bottom: 10px; text-align: center; }
-    .subtitle { text-align: center; color: #3b82f6; font-size: 1.2rem; font-weight: 600; font-style: italic; margin-bottom: 40px; }
+    /* 4. TIEU DE CHINH */
+    h1 { color: #1a3615 !important; font-weight: 800; font-size: 2.5rem; text-transform: uppercase; border-bottom: 4px solid #558b2f; padding-bottom: 10px; margin-bottom: 10px; text-align: center; }
+    .subtitle { text-align: center; color: #2e4431; font-size: 1.2rem; font-weight: 600; font-style: italic; margin-bottom: 40px; }
     
-    /* 5. ÉP KIỂU CHO CÁC Ô NHẬP LIỆU (INPUTS) THẬT ĐẸP */
+    /* 5. INPUTS */
     div[data-testid="stTextInput"] input, 
     div[data-testid="stNumberInput"] input,
     div[data-testid="stSelectbox"] > div[data-baseweb="select"] {
         border-radius: 8px !important;
-        border: 2px solid #cbd5e1 !important;
+        border: 2px solid #a5d6a7 !important;
         padding: 10px 15px !important;
         background-color: #ffffff !important;
-        color: #0f172a !important;
+        color: #111111 !important;
         font-weight: 600 !important;
-        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
         transition: all 0.3s ease !important;
     }
-    
     div[data-testid="stTextInput"] input:focus, 
     div[data-testid="stNumberInput"] input:focus,
     div[data-testid="stSelectbox"] > div[data-baseweb="select"]:focus-within {
-        border-color: #2563eb !important;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
-        background-color: #f0f9ff !important;
+        border-color: #558b2f !important;
+        box-shadow: 0 0 0 3px rgba(85, 139, 47, 0.2) !important;
+        background-color: #f1f8f1 !important;
     }
     
-    /* Tên nhãn (Labels) của ô nhập */
     .stTextInput label p, .stSelectbox label p, .stNumberInput label p {
-        color: #1e293b !important;
+        color: #1a3615 !important;
         font-weight: 700 !important;
         font-size: 1rem !important;
         margin-bottom: 5px !important;
     }
     
-    /* 6. LÀM ĐẸP TIÊU ĐỀ CỘT (SUBHEADERS) */
+    /* 6. H2 */
     h2 {
-        background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+        background: linear-gradient(135deg, #2e4431 0%, #558b2f 100%);
         color: white !important;
         padding: 15px 20px !important;
         border-radius: 10px !important;
@@ -250,42 +249,42 @@ st.markdown("""
         text-transform: uppercase;
     }
     
-    /* 7. METRICS (THẺ SỐ LIỆU TỔNG KẾT) */
+    /* 7. METRICS */
     div[data-testid="stMetric"] { 
-        background: linear-gradient(to bottom right, #ffffff, #f8fafc) !important;
+        background: linear-gradient(to bottom right, #ffffff, #f1f8f1) !important;
         padding: 20px !important; 
         border-radius: 12px !important; 
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important; 
-        border-top: 5px solid #2563eb !important; 
+        border-top: 5px solid #558b2f !important; 
     }
-    div[data-testid="stMetric"] label p { color: #64748b !important; font-weight: 700 !important; font-size: 1.1rem !important; }
-    div[data-testid="stMetric"] div[data-testid="stMetricValue"] { color: #1e40af !important; font-weight: 900 !important; font-size: 2.2rem !important; }
+    div[data-testid="stMetric"] label p { color: #2e4431 !important; font-weight: 700 !important; font-size: 1.1rem !important; }
+    div[data-testid="stMetric"] div[data-testid="stMetricValue"] { color: #1a3615 !important; font-weight: 900 !important; font-size: 2.2rem !important; }
     
-    /* 8. BẢNG BÓC TÁCH & EXPANDERS */
+    /* 8. EXPANDERS */
     .streamlit-expanderHeader { 
-        background-color: #dbeafe !important; 
-        color: #1e40af !important; 
+        background-color: #e8f5e9 !important; 
+        color: #1a3615 !important; 
         border-radius: 8px !important; 
         font-weight: 800 !important; 
         font-size: 1.2rem !important; 
-        border-left: 5px solid #2563eb !important;
+        border-left: 5px solid #558b2f !important;
     }
     
-    /* 9. NÚT BẤM (BUTTONS) */
+    /* 9. BUTTONS */
     .stButton > button {
-        background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%) !important;
+        background: linear-gradient(90deg, #558b2f 0%, #33691e 100%) !important;
         color: white !important;
         border-radius: 8px !important;
         font-weight: 800 !important;
         padding: 12px 24px !important;
         border: none !important;
-        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4) !important;
+        box-shadow: 0 4px 6px -1px rgba(85, 139, 47, 0.4) !important;
         transition: all 0.3s ease !important;
         text-transform: uppercase !important;
     }
     .stButton > button:hover {
         transform: translateY(-3px) !important;
-        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.5) !important;
+        box-shadow: 0 10px 15px -3px rgba(85, 139, 47, 0.5) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -395,9 +394,9 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                     
                     real_listings = []
                     if nguon_du_lieu in ["Chợ Tốt (Khuyên dùng)", "Cào Tất Cả (Chợ Tốt + Mogi)"]:
-                        real_listings.extend(fetch_chotot(dia_chi))
+                        real_listings.extend(fetch_chotot(dia_chi, loai_vi_tri))
                     if nguon_du_lieu in ["Mogi.vn", "Cào Tất Cả (Chợ Tốt + Mogi)"]:
-                        real_listings.extend(fetch_mogi(dia_chi))
+                        real_listings.extend(fetch_mogi(dia_chi, loai_vi_tri))
                         
                     don_gia_dat = 100.0 
                     
