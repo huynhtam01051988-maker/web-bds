@@ -182,81 +182,110 @@ def fetch_mogi(keyword):
 # --- CSS TÙY CHỈNH CHO GIAO DIỆN DASHBOARD CHUYÊN NGHIỆP ---
 st.markdown("""
 <style>
-    .stApp { background-color: #f8fafc; }
-    [data-testid="stSidebar"] { background-color: #0f172a; }
-    [data-testid="stSidebar"] h1 { color: #f8fafc !important; font-size: 1.5rem; text-align: center; border-bottom: 1px solid #334155; padding-bottom: 15px; margin-bottom: 20px;}
-    [data-testid="stSidebar"] .stRadio label { font-size: 1.1rem; font-weight: 600; padding: 12px 10px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
-    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover { background-color: #1e293b; }
+    /* 1. ĐỔI FONT CHỮ SANG MONTSERRAT (CỰC KỲ SANG TRỌNG) */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap');
+    
+    html, body, [class*="css"], [class*="st-"] {
+        font-family: 'Montserrat', sans-serif !important;
+    }
+
+    /* 2. HÌNH NỀN BẤT ĐỘNG SẢN CHUYÊN NGHIỆP */
+    .stApp { 
+        background: linear-gradient(rgba(240, 244, 248, 0.90), rgba(240, 244, 248, 0.95)), 
+                    url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop") 
+                    center/cover no-repeat fixed !important;
+    }
+    
+    /* 3. SIDEBAR TỐI MÀU QUYỀN LỰC */
+    [data-testid="stSidebar"] { background-color: #0f172a !important; }
+    [data-testid="stSidebar"] h1 { color: #38bdf8 !important; font-size: 1.6rem; text-align: center; border-bottom: 2px solid #334155; padding-bottom: 15px; margin-bottom: 20px;}
+    [data-testid="stSidebar"] .stRadio label { font-size: 1.1rem; font-weight: 600; padding: 12px 10px; cursor: pointer; border-radius: 8px; margin-bottom: 5px; color: #f8fafc !important;}
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover { background-color: #1e293b !important; color: #38bdf8 !important; }
     [data-testid="stSidebar"] p { color: #cbd5e1 !important; }
     
-    /* Main Title */
-    h1 { color: #1e293b; font-weight: 800; font-size: 2.2rem; text-transform: uppercase; border-bottom: 4px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
-    .subtitle { text-align: center; color: #64748b; font-size: 1.1rem; font-style: italic; margin-bottom: 30px; }
+    /* 4. TIÊU ĐỀ CHÍNH */
+    h1 { color: #1e293b; font-weight: 800; font-size: 2.5rem; text-transform: uppercase; border-bottom: 4px solid #2563eb; padding-bottom: 10px; margin-bottom: 10px; text-align: center; }
+    .subtitle { text-align: center; color: #3b82f6; font-size: 1.2rem; font-weight: 600; font-style: italic; margin-bottom: 40px; }
     
-    /* Card Columns Layout */
-    [data-testid="column"] {
-        background-color: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-        border: 1px solid #e2e8f0;
-        margin-bottom: 15px;
-    }
-    
-    /* Column Subheaders */
-    [data-testid="column"] h2 {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        font-size: 1.3rem;
-        margin-top: -10px;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* Input Fields Styling */
-    div[data-baseweb="input"] > div, 
-    div[data-baseweb="select"] > div {
-        background-color: #f1f5f9;
-        border-radius: 6px;
-        border: 1px solid #cbd5e1;
-        transition: all 0.2s ease;
-    }
-    div[data-baseweb="input"] > div:focus-within, 
-    div[data-baseweb="select"] > div:focus-within {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-    }
-    
-    /* Labels */
-    .stTextInput label, .stSelectbox label, .stNumberInput label {
-        color: #334155 !important;
+    /* 5. ÉP KIỂU CHO CÁC Ô NHẬP LIỆU (INPUTS) THẬT ĐẸP */
+    div[data-testid="stTextInput"] input, 
+    div[data-testid="stNumberInput"] input,
+    div[data-testid="stSelectbox"] > div[data-baseweb="select"] {
+        border-radius: 8px !important;
+        border: 2px solid #cbd5e1 !important;
+        padding: 10px 15px !important;
+        background-color: #ffffff !important;
+        color: #0f172a !important;
         font-weight: 600 !important;
-        font-size: 0.95rem !important;
-        margin-bottom: 5px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+        transition: all 0.3s ease !important;
     }
     
-    /* Metrics */
-    div[data-testid="stMetric"] { background-color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-left: 6px solid #2563eb; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
-    div[data-testid="stMetric"] label { color: #475569; font-weight: 600; font-size: 1rem; }
-    div[data-testid="stMetric"] div[data-testid="stMetricValue"] { color: #0f172a; font-weight: 800; font-size: 2rem; }
+    div[data-testid="stTextInput"] input:focus, 
+    div[data-testid="stNumberInput"] input:focus,
+    div[data-testid="stSelectbox"] > div[data-baseweb="select"]:focus-within {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2) !important;
+        background-color: #f0f9ff !important;
+    }
     
-    /* Expanders */
-    .streamlit-expanderHeader { background-color: #e0e7ff !important; color: #1e40af !important; border-radius: 8px; font-weight: 700; font-size: 1.1rem; }
+    /* Tên nhãn (Labels) của ô nhập */
+    .stTextInput label p, .stSelectbox label p, .stNumberInput label p {
+        color: #1e293b !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        margin-bottom: 5px !important;
+    }
     
-    /* Buttons */
+    /* 6. LÀM ĐẸP TIÊU ĐỀ CỘT (SUBHEADERS) */
+    h2 {
+        background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+        color: white !important;
+        padding: 15px 20px !important;
+        border-radius: 10px !important;
+        font-size: 1.4rem !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2) !important;
+        margin-top: 10px !important;
+        margin-bottom: 20px !important;
+        text-transform: uppercase;
+    }
+    
+    /* 7. METRICS (THẺ SỐ LIỆU TỔNG KẾT) */
+    div[data-testid="stMetric"] { 
+        background: linear-gradient(to bottom right, #ffffff, #f8fafc) !important;
+        padding: 20px !important; 
+        border-radius: 12px !important; 
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important; 
+        border-top: 5px solid #2563eb !important; 
+    }
+    div[data-testid="stMetric"] label p { color: #64748b !important; font-weight: 700 !important; font-size: 1.1rem !important; }
+    div[data-testid="stMetric"] div[data-testid="stMetricValue"] { color: #1e40af !important; font-weight: 900 !important; font-size: 2.2rem !important; }
+    
+    /* 8. BẢNG BÓC TÁCH & EXPANDERS */
+    .streamlit-expanderHeader { 
+        background-color: #dbeafe !important; 
+        color: #1e40af !important; 
+        border-radius: 8px !important; 
+        font-weight: 800 !important; 
+        font-size: 1.2rem !important; 
+        border-left: 5px solid #2563eb !important;
+    }
+    
+    /* 9. NÚT BẤM (BUTTONS) */
     .stButton > button {
-        border-radius: 8px;
-        font-weight: 700;
-        padding: 10px 20px;
-        border: none;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transition: all 0.2s ease;
+        background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%) !important;
+        color: white !important;
+        border-radius: 8px !important;
+        font-weight: 800 !important;
+        padding: 12px 24px !important;
+        border: none !important;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4) !important;
+        transition: all 0.3s ease !important;
+        text-transform: uppercase !important;
     }
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
+        transform: translateY(-3px) !important;
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.5) !important;
     }
 </style>
 """, unsafe_allow_html=True)
