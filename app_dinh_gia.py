@@ -239,12 +239,33 @@ with tab_dinh_gia:
                             ai_analysis = analyze_images(uploaded_files)
                             
                             import re, json
-                            json_match = re.search(r'```json\n(.*?)\n```', ai_analysis, re.DOTALL)
-                            if json_match:
+                            
+                            # Tìm block JSON bằng cách linh hoạt hơn
+                            json_match = re.search(r'```(?:json)?\s*\n(.*?)\n```', ai_analysis, re.DOTALL | re.IGNORECASE)
+                            if not json_match:
+                                # Nếu model trả về JSON mà không có thẻ markdown
+                                json_match_raw = re.search(r'(\{.*?\})', ai_analysis, re.DOTALL)
+                                if json_match_raw:
+                                    try:
+                                        # Kiểm tra xem đoạn chứa ngoặc nhọn có thực sự là JSON hợp lệ hay không
+                                        json.loads(json_match_raw.group(1)) 
+                                        json_str = json_match_raw.group(1)
+                                    except:
+                                        json_str = None
+                                else:
+                                    json_str = None
+                            else:
+                                json_str = json_match.group(1)
+
+                            if json_str:
                                 try:
-                                    parsed = json.loads(json_match.group(1))
+                                    parsed = json.loads(json_str)
                                     ai_params.update(parsed)
-                                    ai_analysis = ai_analysis.replace(json_match.group(0), "")
+                                    # Xóa json khỏi text
+                                    if json_match:
+                                        ai_analysis = ai_analysis.replace(json_match.group(0), "")
+                                    else:
+                                        ai_analysis = ai_analysis.replace(json_str, "")
                                 except Exception as e:
                                     pass
                                     
