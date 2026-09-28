@@ -417,36 +417,48 @@ with tab_dinh_gia:
                         st.metric("💰 Chủ Thực Thu (Net)", f"{tien_thuc_thu:.2f} Tỷ", help="Số tiền mặt cầm về sau khi trừ Thuế TNCN 2%, Hoa hồng 2% và giấy tờ.")
                         
                     # BẢNG BÓC TÁCH CÔNG THỨC 5 BƯỚC CHI TIẾT
+                    
+                    full_breakdown_md = f"""### 📍 BƯỚC 1 & 2: Định giá Đất ({dt_thuc_te} m2)
+- **Đơn giá cơ sở khu vực (P_base thuần):** `{p_base_thuan:.1f} tr/m2` *(sau khi bóc tách xác nhà khỏi tin cào)*
+  > 💡 *Giải thích: Đơn giá cào trên mạng là giá GỘP (nhà+đất). Phải trừ bớt ~10tr/m2 tiền xác nhà cũ để lòi ra giá Đất Nền thuần túy.*
+- **1. Vị trí ({k1_desc}):** `x {k1_vitri:.2f}`
+  > 💡 *Giải thích: Mặt tiền kinh doanh sầm uất thì cộng thêm 35% giá trị so với hẻm. Còn hẻm ba gác/xe máy lụp xụp thì phải trừ đi 15% vì thanh khoản kém.*
+- **2. Quy mô diện tích ({k2_desc}):** `x {k2_dientich:.2f}`
+  > 💡 *Giải thích: Nhà càng to, tổng tiền càng lớn, càng ít người đủ tiền mua (kén khách). Theo luật giang hồ, diện tích >100m2 thì đơn giá/m2 phải rẻ hơn nhà 50m2 khoảng 5-10%.*
+- **3. Bề ngang mặt tiền ({k3_desc}):** `x {k3_ngang:.2f}`
+  > 💡 *Giải thích: Nhà bề ngang rộng (>5m) làm form nhà cực đẹp, dễ kinh doanh, dễ bố trí phòng nên được cộng 5% giá trị. Ngược lại bề ngang hẹp (<3.3m) nhìn như cái ống, bí bách, ép giá ngay 5-12%.*
+- **4. Hình thể & Lộ giới ({k4_desc}):** `x {k4_logioi:.2f}`
+  > 💡 *Giải thích: Dính quy hoạch lộ giới bị cắt sâu, hoặc nhà tóp hậu (nở tiền tóp hậu) là lỗi cực nặng trong phong thủy và xây dựng. AI soi Sổ Hồng thấy lỗi này sẽ tự động trừ 5-15% tùy mức độ.*
+- **5. Phong thủy & Hạ tầng ({k5_desc}):** `x {k5_phongthuy:.2f}`
+  > 💡 *Giải thích: Khách đi mua ở cực kỵ cột điện to, trạm biến áp, hố ga nằm chình ình trước cửa, hoặc đường đâm thẳng vào nhà. Thấy lỗi này, môi giới vịn vào chém ngay 5-12% giá.*
+- **6. Thương mại / Dòng tiền ({k6_desc}):** `x {k6_thuongmai:.2f}`
+  > 💡 *Giải thích: Nếu nhà đang có sẵn Hợp đồng thuê dài hạn, thương hiệu xịn thuê, sinh ra dòng tiền hàng tháng ổn định thì đây là Con Gà Đẻ Trứng Vàng, được cộng thêm 5% giá trị.*
+
+**=> Hệ số tổng hợp đất:** `{k_tong_dat:.3f}` | **Đơn giá đất thực tế:** `{don_gia_dat_thuc_te:.1f} tr/m2`
+💵 **Tiền Đất:** `{gia_tri_dat_thuc_te:.2f} Tỷ đồng`
+
+---
+### 🏠 BƯỚC 3: Định giá Xác Nhà
+- **Tiền xác nhà hoàn công:** `{gia_tri_xac_nha:.2f} Tỷ đồng` *(tính theo cấp nhà và khấu hao)*
+  > 💡 *Giải thích: Nếu AI đọc Sổ Hồng thấy ghi Cấp 4 (nhưng thực tế nhà 1 lầu), tức là nhà xây chui chưa hoàn công, định giá xác nhà chỉ được tính như nhà Cấp 4 (rất rẻ).*
+
+---
+### 🎯 BƯỚC 4 & 5: Tổng Hợp & Bảng Tính Thực Thu (Net Cash)
+- **Tổng giá trị tài sản chuẩn:** `{gia_tri_chuan:.2f} Tỷ đồng`
+- **Giá bán gấp (Thanh khoản nhanh):** `{gia_gap:.2f} Tỷ đồng`
+
+| Khoản mục | Tỷ lệ / Cách tính | Số tiền (Tính trên giá chốt {gia_chot:.2f} Tỷ) |
+| :--- | :--- | :--- |
+| **Giá chốt hợp đồng** | Giá thị trường chuẩn | **{gia_chot:.2f} Tỷ** |
+| **Thuế Thu nhập cá nhân (TNCN)** | 2% trên giá bán | Trừ **{thue_tncn*1000:.0f} Triệu** |
+| **Phí môi giới cho team** | 2% hoa hồng | Trừ **{phi_moi_gioi*1000:.0f} Triệu** |
+| **Phí công chứng & bớt lộc** | Dự phòng hồ sơ | Trừ **{phi_giay_to*1000:.0f} Triệu** |
+| **👉 TIỀN THỰC THU CỦA CHỦ NHÀ** | **= Giá bán - Các chi phí trên** | **{tien_thuc_thu:.2f} Tỷ đồng (Net)** |
+
+> 💡 *Giải thích cho Lính mới (Dùng để chốt chủ nhà): Chủ nhà hay bị ảo tưởng con số Tỷ đồng đăng bán mà quên mất chi phí chìm. Môi giới phải lấy bảng này đập vào mắt chủ: 'Anh chị kêu {gia_chot} Tỷ, nhưng nhà nước thu Thuế 2%, đóng Phí môi giới 2%, rồi tiền làm giấy tờ công chứng, phí trước bạ... Thực tế anh chị đút túi chỉ có {tien_thuc_thu:.2f} Tỷ thôi. Bán nhanh đi anh chị ơi!'*
+"""
                     with st.expander("🧮 BẢNG BÓC TÁCH ĐỊNH GIÁ ĐA TIÊU CHÍ 5 BƯỚC (ĐÀO TẠO & TƯ VẤN CHỦ NHÀ)", expanded=True):
-                        st.markdown(f"### 📍 BƯỚC 1 & 2: Định giá Đất ({dt_thuc_te} m2)")
-                        st.markdown(f"- **Đơn giá cơ sở khu vực (P_base thuần):** `{p_base_thuan:.1f} tr/m2` *(sau khi bóc tách xác nhà khỏi tin cào)*\n  > 💡 *Giải thích: Đơn giá cào trên mạng là giá GỘP (nhà+đất). Phải trừ bớt ~10tr/m2 tiền xác nhà cũ để lòi ra giá Đất Nền thuần túy.*")
-                        
-                        st.markdown(f"- **1. Vị trí ({k1_desc}):** `x {k1_vitri:.2f}`\n  > 💡 *Giải thích: Mặt tiền kinh doanh sầm uất thì cộng thêm 35% giá trị so với hẻm. Còn hẻm ba gác/xe máy lụp xụp thì phải trừ đi 15% vì thanh khoản kém.*")
-                        
-                        st.markdown(f"- **2. Quy mô diện tích ({k2_desc}):** `x {k2_dientich:.2f}`\n  > 💡 *Giải thích: Nhà càng to, tổng tiền càng lớn, càng ít người đủ tiền mua (kén khách). Theo luật giang hồ, diện tích >100m2 thì đơn giá/m2 phải rẻ hơn nhà 50m2 khoảng 5-10%.*")
-                        
-                        st.markdown(f"- **3. Bề ngang mặt tiền ({k3_desc}):** `x {k3_ngang:.2f}`\n  > 💡 *Giải thích: Nhà bề ngang rộng (>5m) làm form nhà cực đẹp, dễ kinh doanh, dễ bố trí phòng nên được cộng 5% giá trị. Ngược lại bề ngang hẹp (<3.3m) nhìn như cái ống, bí bách, ép giá ngay 5-12%.*")
-                        
-                        st.markdown(f"- **4. Hình thể & Lộ giới ({k4_desc}):** `x {k4_logioi:.2f}`\n  > 💡 *Giải thích: Dính quy hoạch lộ giới bị cắt sâu, hoặc nhà tóp hậu (nở tiền tóp hậu) là lỗi cực nặng trong phong thủy và xây dựng. AI soi Sổ Hồng thấy lỗi này sẽ tự động trừ 5-15% tùy mức độ.*")
-                        
-                        st.markdown(f"- **5. Phong thủy & Hạ tầng ({k5_desc}):** `x {k5_phongthuy:.2f}`\n  > 💡 *Giải thích: Khách đi mua ở cực kỵ cột điện to, trạm biến áp, hố ga nằm chình ình trước cửa, hoặc đường đâm thẳng vào nhà. Thấy lỗi này, môi giới vịn vào chém ngay 5-12% giá.*")
-                        
-                        st.markdown(f"- **6. Thương mại / Dòng tiền ({k6_desc}):** `x {k6_thuongmai:.2f}`\n  > 💡 *Giải thích: Nếu nhà đang có sẵn Hợp đồng thuê dài hạn, thương hiệu xịn thuê, sinh ra dòng tiền hàng tháng ổn định thì đây là Con Gà Đẻ Trứng Vàng, được cộng thêm 5% giá trị.*")
-                        
-                        st.markdown(f"**=> Hệ số tổng hợp đất:** `{k_tong_dat:.3f}` | **Đơn giá đất thực tế:** `{don_gia_dat_thuc_te:.1f} tr/m2`")
-                        st.markdown(f"💵 **Tiền Đất:** `{gia_tri_dat_thuc_te:.2f} Tỷ đồng`")
-                        
-                        st.markdown("---")
-                        st.markdown(f"### 🏠 BƯỚC 3: Định giá Xác Nhà")
-                        st.markdown(f"- **Tiền xác nhà hoàn công:** `{gia_tri_xac_nha:.2f} Tỷ đồng` *(tính theo cấp nhà và khấu hao)*\n  > 💡 *Giải thích: Nếu AI đọc Sổ Hồng thấy ghi Cấp 4 (nhưng thực tế nhà 1 lầu), tức là nhà xây chui chưa hoàn công, định giá xác nhà chỉ được tính như nhà Cấp 4 (rất rẻ).*")
-                        
-                        st.markdown("---")
-                        st.markdown(f"### 🎯 BƯỚC 4 & 5: Tổng Hợp & Bảng Tính Thực Thu (Net Cash)")
-                        st.markdown(f"- **Tổng giá trị tài sản chuẩn:** `{gia_tri_chuan:.2f} Tỷ đồng`")
-                        st.markdown(f"- **Giá bán gấp (Thanh khoản nhanh):** `{gia_gap:.2f} Tỷ đồng`")
-                        st.markdown("\n") # Fix broken table
-                        st.markdown(f"| Khoản mục | Tỷ lệ / Cách tính | Số tiền (Tính trên giá chốt {gia_chot:.2f} Tỷ) |\n| :--- | :--- | :--- |\n| **Giá chốt hợp đồng** | Giá thị trường chuẩn | **{gia_chot:.2f} Tỷ** |\n| **Thuế Thu nhập cá nhân (TNCN)** | 2% trên giá bán | Trừ **{thue_tncn*1000:.0f} Triệu** |\n| **Phí môi giới cho team** | 2% hoa hồng | Trừ **{phi_moi_gioi*1000:.0f} Triệu** |\n| **Phí công chứng & bớt lộc** | Dự phòng hồ sơ | Trừ **{phi_giay_to*1000:.0f} Triệu** |\n| **👉 TIỀN THỰC THU CỦA CHỦ NHÀ** | **= Giá bán - Các chi phí trên** | **{tien_thuc_thu:.2f} Tỷ đồng (Net)** |")
-                        st.markdown(f"\n> 💡 *Giải thích cho Lính mới (Dùng để chốt chủ nhà): Chủ nhà hay bị ảo tưởng con số Tỷ đồng đăng bán mà quên mất chi phí chìm. Môi giới phải lấy bảng này đập vào mắt chủ: 'Anh chị kêu {gia_chot} Tỷ, nhưng nhà nước thu Thuế 2%, đóng Phí môi giới 2%, rồi tiền làm giấy tờ công chứng, phí trước bạ... Thực tế anh chị đút túi chỉ có {tien_thuc_thu:.2f} Tỷ thôi. Bán nhanh đi anh chị ơi!'*")
+                        st.markdown(full_breakdown_md)
                         
                     # SO SÁNH VỚI GIÁ CHỦ KÊU NẾU CÓ
                     if gia_chu_keu > 0:
@@ -468,7 +480,7 @@ with tab_dinh_gia:
                                 
                             if "Lỗi toàn tập" not in ai_analysis:
                                 gia_tien_str = f"### 💰 ĐỊNH GIÁ: Rao {gia_rao:.2f} Tỷ | Chốt {gia_chot:.2f} Tỷ | Chủ Thực Thu {tien_thuc_thu:.2f} Tỷ\n\n"
-                                bang_tinh_str = f"**Bảng bóc tách 5 bước:**\n- Diện tích: {dt_thuc_te} m2\n- Đơn giá đất thực tế: {don_gia_dat_thuc_te:.1f} tr/m2 (Hệ số K: {k_tong_dat:.3f})\n- Tiền đất: {gia_tri_dat_thuc_te:.2f} Tỷ | Xác nhà: {gia_tri_xac_nha:.2f} Tỷ\n- Chủ thực thu (Net): {tien_thuc_thu:.2f} Tỷ\n\n"
+                                bang_tinh_str = f"**Bảng bóc tách chi tiết:**\n\n{full_breakdown_md}\n\n"
                                 full_report = gia_tien_str + bang_tinh_str + "---\n\n" + ai_analysis
                                 
                                 ts = int(time.time())
