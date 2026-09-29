@@ -1037,24 +1037,46 @@ elif menu == "🏢 6. TÌNH BÁO DỰ ÁN":
     st.header("🏢 TRUNG TÂM TÌNH BÁO DỰ ÁN & HẠ TẦNG (MIỀN NAM)")
     st.markdown("---")
     
-    st.info("💡 **Siêu Cò AI** đã được nạp dữ liệu Tình báo BĐS. Sếp hãy hỏi bất kỳ thông tin nào về các dự án sắp mở bán, tiến độ thi công (Vinhomes, Bcons, PiGroup...), hoặc các tuyến Metro, Vành Đai...")
+    st.info("💡 **Siêu Cò AI** đã được nạp dữ liệu Tình báo BĐS. Sếp hãy chọn dự án bên dưới hoặc gõ trực tiếp để điều tra tiến độ thi công, lịch mở bán và lời khuyên chọn lô.")
     
-    query = st.text_area("🔍 Sếp cần điều tra dự án hoặc hạ tầng nào?", placeholder="VD: Tiến độ Vành đai 3 đến đâu rồi? Dự án Vinhomes Grand Park phân khu mới nhất mở bán lô nào đẹp? Mua đầu tư ở Bình Dương năm 2026 nên chọn dự án nào?")
-    
+    st.markdown("### 🎯 BỘ LỌC DỰ ÁN NHANH")
+    colA, colB = st.columns(2)
+    with colA:
+        khu_vuc = st.selectbox("📍 Chọn Tỉnh / Thành phố", ["Bình Dương", "TP. Hồ Chí Minh", "Đồng Nai", "Long An", "Tìm tự do (Hạ tầng/Metro)"])
+        
+    with colB:
+        if khu_vuc == "Bình Dương":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Sun Casa Central", "Green City", "Bcons City", "Phú Đông Sky Garden", "Midori Park", "Artisan Park", "Khác (Tự nhập)..."])
+        elif khu_vuc == "TP. Hồ Chí Minh":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Vinhomes Grand Park", "The Global City", "Eaton Park", "Khang Điền (Privia/Classia)", "Zeit River Thủ Thiêm", "Khác (Tự nhập)..."])
+        elif khu_vuc == "Đồng Nai":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Aqua City", "Izumi City", "Gem Sky World", "Eco Village Saigon River", "Khác (Tự nhập)..."])
+        elif khu_vuc == "Long An":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Waterpoint Nam Long", "Destino Centro", "LA Home", "Khác (Tự nhập)..."])
+        else:
+            du_an = "Khác (Tự nhập)..."
+            
+    if du_an == "Khác (Tự nhập)..." or khu_vuc == "Tìm tự do (Hạ tầng/Metro)":
+        query = st.text_area("🔍 Sếp cần điều tra dự án hoặc hạ tầng nào?", placeholder="VD: Tuyến Metro số 1 Bến Thành Suối Tiên? Tiến độ Vành đai 3 đi qua Bình Dương?")
+    else:
+        query = f"Chi tiết dự án {du_an} tại {khu_vuc}"
+        st.success(f"🔎 Đã khóa mục tiêu tình báo: **{du_an} ({khu_vuc})**")
+
+    st.markdown("<br>", unsafe_allow_html=True)
     if st.button("🚀 ĐIỀU TRA NGAY", type="primary"):
         if query:
-            with st.spinner("🕵️ Đang cử đặc tình AI đi thu thập thông tin dự án..."):
+            with st.spinner(f"🕵️ Đang cử đặc tình AI đi thu thập thông tin về '{query}'..."):
                 try:
                     prompt = f"""Đóng vai một Giám đốc Tình báo Dự án Bất Động Sản tại Miền Nam (TP.HCM, Bình Dương, Đồng Nai, Long An...).
-                    Sếp của bạn (một siêu cò BĐS) vừa ra lệnh hỏi: '{query}'
+                    Sếp của bạn (một siêu cò BĐS) vừa yêu cầu điều tra: '{query}'
                     
-                    Hãy trả lời cực kỳ chi tiết, thực chiến theo góc nhìn môi giới đầu tư:
-                    1. Cập nhật tiến độ mới nhất của dự án hoặc hạ tầng sếp hỏi. Dự kiến khi nào hoàn thành?
-                    2. Tình hình mở bán: Phân khu/block/lô nào đang mở bán hoặc sắp mở bán? Giá bán rumor là bao nhiêu?
-                    3. Lời khuyên Đánh hàng: Mua lô nào, góc nào, view nào là đẹp nhất, dễ thanh khoản và sinh lời cao nhất? Phân tích lợi hại rõ ràng.
-                    4. Tiềm năng tăng giá theo quy hoạch hạ tầng giao thông xung quanh (Metro, đường vành đai, cao tốc...).
+                    Hãy trả lời cực kỳ chi tiết, cập nhật mới nhất và thực chiến theo góc nhìn môi giới đầu tư:
+                    1. Cập nhật tiến độ mới nhất của dự án/hạ tầng. Chủ đầu tư đang làm tới giai đoạn nào? Bao giờ bàn giao?
+                    2. Tình hình mở bán: Các phân khu/block/lô nào đang mở bán hoặc sắp mở bán? Giá bán (hoặc giá rumor) hiện tại là bao nhiêu?
+                    3. Lời khuyên Đánh hàng: Sếp nên tư vấn khách mua lô nào, góc nào, view nào là đẹp nhất, dễ thanh khoản và sinh lời cao nhất?
+                    4. Tiềm năng tăng giá: Phân tích hạ tầng giao thông xung quanh hỗ trợ dự án.
                     
-                    Trả lời bằng giọng điệu vô cùng chuyên nghiệp, sắc bén, tôn trọng gọi người dùng là Sếp. Trình bày rõ ràng bằng Markdown."""
+                    Trình bày bằng giọng điệu vô cùng chuyên nghiệp, sắc bén, gọi người dùng là 'Sếp'. Dùng Markdown định dạng thật đẹp, rõ ràng."""
                     
                     response = client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
                     
