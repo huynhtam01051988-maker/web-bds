@@ -295,7 +295,7 @@ st.markdown("<div class='subtitle'>Bản quyền Hệ thống thuộc về Hội
 st.sidebar.markdown("<h1>⚙️ BẢNG ĐIỀU KHIỂN</h1>", unsafe_allow_html=True)
 menu = st.sidebar.radio(
     "CHỌN TÍNH NĂNG:",
-    ["📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH", "🗺️ 2. KIỂM TRA QUY HOẠCH", "🤝 3. CRM & QUẢN LÝ RỔ HÀNG", "⚖️ 4. TỪ ĐIỂN PHÁP LÝ", "🎓 5. HỌC VIỆN MÔI GIỚI"]
+    ["📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH", "🗺️ 2. KIỂM TRA QUY HOẠCH", "🤝 3. CRM & QUẢN LÝ RỔ HÀNG", "⚖️ 4. TỪ ĐIỂN PHÁP LÝ", "🎓 5. HỌC VIỆN MÔI GIỚI", "🏢 6. TÌNH BÁO DỰ ÁN"]
 )
 st.sidebar.markdown("---")
 st.sidebar.info("Hệ thống độc quyền tích hợp AI phân tích Sổ Hồng và dữ liệu thị trường theo thời gian thực.")
@@ -436,8 +436,8 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                     # 1. Diện tích áp dụng (Ưu tiên Sổ Hồng AI bóc được)
                     dt_thuc_te = ai_params["dien_tich_dat_m2"] if ai_params.get("dien_tich_dat_m2", 0) > 0 else dien_tich
                     
-                    # 2. Đơn giá đất cơ sở thuần (Bóc tách tiền xác nhà cũ trung bình 10tr/m2 khỏi tin rao)
-                    p_base_thuan = max(p_base - 10.0, 30.0) if p_base > 30 else p_base
+                    # 2. Đơn giá đất cơ sở thuần (Bóc tách tiền xác nhà cũ trung bình 5tr/m2 khỏi tin rao)
+                    p_base_thuan = max(p_base - 5.0, 30.0) if p_base > 30 else p_base
                     
                     # 3. TÍNH TOÁN BỘ 6 HỆ SỐ ĐIỀU CHỈNH ĐẤT (K1 -> K6)
                     # K1: Vị trí hẻm / mặt tiền
@@ -459,11 +459,11 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                         k2_dientich = 1.00
                         k2_desc = "Diện tích chuẩn 40-70m2 (1.0)"
                     elif dt_thuc_te <= 100:
-                        k2_dientich = 0.95
-                        k2_desc = "Diện tích vừa 70-100m2 (-5%)"
+                        k2_dientich = 0.98
+                        k2_desc = "Diện tích vừa 70-100m2 (-2%)"
                     else:
-                        k2_dientich = 0.90
-                        k2_desc = "Diện tích lớn >100m2 (-10% do kén khách)"
+                        k2_dientich = 0.95
+                        k2_desc = "Diện tích lớn >100m2 (-5% do kén khách)"
                         
                     # K3: Bề ngang mặt tiền đất
                     be_ngang = ai_params.get("be_ngang_m", 4.0)
@@ -475,7 +475,7 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                         k3_desc = f"Bề ngang chuẩn {be_ngang}m (1.0)"
                     elif be_ngang >= 3.3:
                         k3_ngang = 0.95
-                        k3_desc = f"Bề ngang hẹp vừa {be_ngang}m (-5%)"
+                        k3_desc = f"Bề ngang hẹp vừa {be_ngang}m (-2%)"
                     else:
                         k3_ngang = 0.88
                         k3_desc = f"Bề ngang hẹp <3.3m ({be_ngang}m, -12%)"
@@ -493,7 +493,7 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                     k6_desc = "Có hợp đồng thuê / Dòng tiền (+5%)" if k6_thuongmai > 1.0 else "Nhà ở thuần túy (1.0)"
                     
                     # TỔNG HỢP HỆ SỐ ĐẤT & GIÁ TRỊ ĐẤT
-                    k_tong_dat = k1_vitri * k2_dientich * k3_ngang * k4_logioi * k5_phongthuy * k6_thuongmai
+                    k_tong_dat = k1_vitri * k2_dientich * k3_ngang * k4_logioi * k6_thuongmai
                     don_gia_dat_thuc_te = p_base_thuan * k_tong_dat
                     gia_tri_dat_thuc_te = (dt_thuc_te * don_gia_dat_thuc_te) / 1000.0 # Tỷ đồng
                     
@@ -513,7 +513,7 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                     
                     # 6. BỘ 3 MỨC GIÁ CHIẾN LƯỢC CHO MÔI GIỚI
                     gia_chot = round(gia_tri_chuan, 2)
-                    gia_rao = round(gia_chot * 1.05, 2)  # Tạo khoảng bớt lộc 5%
+                    gia_rao = round(gia_chot * 1.08, 2)  # Tạo khoảng bớt lộc 5%
                     gia_gap = round(gia_chot * 0.94, 2)  # Bán gấp cho chủ kẹt tiền
                     
                     # 7. BẢNG TÍNH THỰC THU CHO CHỦ NHÀ (NET CASH)
@@ -535,7 +535,7 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                     
                     full_breakdown_md = f"""### 📍 BƯỚC 1 & 2: Định giá Đất ({dt_thuc_te} m2)
 - **Đơn giá cơ sở khu vực (P_base thuần):** `{p_base_thuan:.1f} tr/m2` *(sau khi bóc tách xác nhà khỏi tin cào)*
-  > 💡 *Giải thích: Đơn giá cào trên mạng là giá GỘP (nhà+đất). Phải trừ bớt ~10tr/m2 tiền xác nhà cũ để lòi ra giá Đất Nền thuần túy.*
+  > 💡 *Giải thích: Đơn giá cào trên mạng là giá GỘP (nhà+đất). Phải trừ bớt ~5tr/m2 tiền xác nhà cũ để lòi ra giá Đất Nền thuần túy.*
 - **1. Vị trí ({k1_desc}):** `x {k1_vitri:.2f}`
   > 💡 *Giải thích: Mặt tiền kinh doanh sầm uất thì cộng thêm 35% giá trị so với hẻm. Còn hẻm ba gác/xe máy lụp xụp thì phải trừ đi 15% vì thanh khoản kém.*
 - **2. Quy mô diện tích ({k2_desc}):** `x {k2_dientich:.2f}`
@@ -1032,3 +1032,35 @@ Viết theo văn phong nhắn tin Zalo, ngắn gọn, thân thiện, dùng biể
         else:
             st.warning("Nhập câu chê của khách vào đi anh em!")
 
+
+elif menu == "🏢 6. TÌNH BÁO DỰ ÁN":
+    st.header("🏢 TRUNG TÂM TÌNH BÁO DỰ ÁN & HẠ TẦNG (MIỀN NAM)")
+    st.markdown("---")
+    
+    st.info("💡 **Siêu Cò AI** đã được nạp dữ liệu Tình báo BĐS. Sếp hãy hỏi bất kỳ thông tin nào về các dự án sắp mở bán, tiến độ thi công (Vinhomes, Bcons, PiGroup...), hoặc các tuyến Metro, Vành Đai...")
+    
+    query = st.text_area("🔍 Sếp cần điều tra dự án hoặc hạ tầng nào?", placeholder="VD: Tiến độ Vành đai 3 đến đâu rồi? Dự án Vinhomes Grand Park phân khu mới nhất mở bán lô nào đẹp? Mua đầu tư ở Bình Dương năm 2026 nên chọn dự án nào?")
+    
+    if st.button("🚀 ĐIỀU TRA NGAY", type="primary"):
+        if query:
+            with st.spinner("🕵️ Đang cử đặc tình AI đi thu thập thông tin dự án..."):
+                try:
+                    prompt = f"""Đóng vai một Giám đốc Tình báo Dự án Bất Động Sản tại Miền Nam (TP.HCM, Bình Dương, Đồng Nai, Long An...).
+                    Sếp của bạn (một siêu cò BĐS) vừa ra lệnh hỏi: '{query}'
+                    
+                    Hãy trả lời cực kỳ chi tiết, thực chiến theo góc nhìn môi giới đầu tư:
+                    1. Cập nhật tiến độ mới nhất của dự án hoặc hạ tầng sếp hỏi. Dự kiến khi nào hoàn thành?
+                    2. Tình hình mở bán: Phân khu/block/lô nào đang mở bán hoặc sắp mở bán? Giá bán rumor là bao nhiêu?
+                    3. Lời khuyên Đánh hàng: Mua lô nào, góc nào, view nào là đẹp nhất, dễ thanh khoản và sinh lời cao nhất? Phân tích lợi hại rõ ràng.
+                    4. Tiềm năng tăng giá theo quy hoạch hạ tầng giao thông xung quanh (Metro, đường vành đai, cao tốc...).
+                    
+                    Trả lời bằng giọng điệu vô cùng chuyên nghiệp, sắc bén, tôn trọng gọi người dùng là Sếp. Trình bày rõ ràng bằng Markdown."""
+                    
+                    response = client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
+                    
+                    st.success("✅ BÁO CÁO TÌNH BÁO HOÀN TẤT")
+                    st.markdown(response.text)
+                except Exception as e:
+                    st.error(f"Lỗi kết nối tình báo: {e}")
+        else:
+            st.warning("Sếp chưa nhập tên dự án cần điều tra!")
