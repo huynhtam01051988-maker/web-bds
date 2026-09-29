@@ -1078,11 +1078,23 @@ elif menu == "🏢 6. TÌNH BÁO DỰ ÁN":
                     
                     Trình bày bằng giọng điệu vô cùng chuyên nghiệp, sắc bén, gọi người dùng là 'Sếp'. Dùng Markdown định dạng thật đẹp, rõ ràng."""
                     
-                    response = client.models.generate_content(model="gemini-3.6-flash", contents=prompt)
+                    models_to_try = ["gemini-3.6-flash", "gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3.5-flash-lite"]
+                    response_text = ""
+                    last_error = ""
+                    for m_name in models_to_try:
+                        try:
+                            res = client.models.generate_content(model=m_name, contents=prompt)
+                            response_text = res.text
+                            break
+                        except Exception as e:
+                            last_error = str(e)
                     
-                    st.success("✅ BÁO CÁO TÌNH BÁO HOÀN TẤT")
-                    st.markdown(response.text)
+                    if response_text:
+                        st.success("✅ BÁO CÁO TÌNH BÁO HOÀN TẤT")
+                        st.markdown(response_text)
+                    else:
+                        st.error(f"Lỗi kết nối tình báo (Đã thử nhiều server AI): {last_error}")
                 except Exception as e:
-                    st.error(f"Lỗi kết nối tình báo: {e}")
+                    st.error(f"Lỗi hệ thống: {e}")
         else:
             st.warning("Sếp chưa nhập tên dự án cần điều tra!")
