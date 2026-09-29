@@ -1033,6 +1033,31 @@ Viết theo văn phong nhắn tin Zalo, ngắn gọn, thân thiện, dùng biể
             st.warning("Nhập câu chê của khách vào đi anh em!")
 
 
+
+    st.markdown("---")
+    st.subheader("🧭 BÍ KÍP: CÁCH XEM HƯỚNG NHÀ TỪ XA (KHÔNG CẦN TỚI NƠI)")
+    st.markdown("""
+    Khách hỏi: *"Căn 8A đường 12 hướng gì em?"* 
+    Môi giới gà mờ sẽ xách xe chạy tới nơi cầm la bàn đo. Nhưng **Siêu Cò** thì chỉ mất 3 giây ngồi ở quán cafe là biết ngay bằng 2 tuyệt chiêu này:
+    
+    #### 🗡️ Tuyệt chiêu 1: Bắt mạch qua Sổ Hồng (Chính xác 100%)
+    - Sếp bảo chủ nhà gửi mặt trong của Sổ Hồng (Trang 3 - phần Sơ đồ thửa đất).
+    - Ở góc trên của Sơ đồ LUÔN LUÔN có một biểu tượng mũi tên chỉ chữ **B** (Hoặc chữ **N** - North). Mũi tên đó chính là **HƯỚNG BẮC**.
+    - Sếp chỉ cần xoay bức ảnh sao cho Mũi tên Bắc chỉ thẳng lên trời (lên trần nhà).
+    - Lúc này, sếp nhìn xem cái đường/hẻm nó nằm ở mép nào của cục đất:
+        - Đường nằm ở Mép Dưới ➡️ Nhà hướng **NAM**.
+        - Đường nằm ở Mép Trái ➡️ Nhà hướng **TÂY**.
+        - Đường nằm ở Mép Phải ➡️ Nhà hướng **ĐÔNG**.
+        - Nằm xéo xéo góc dưới bên phải ➡️ Hướng **ĐÔNG NAM**.
+    
+    #### 🛰️ Tuyệt chiêu 2: Bắt mạch qua Google Maps (Khi chưa có Sổ Hồng)
+    1. Mở app **Google Maps**, gõ địa chỉ: *"Đường 12, Hiệp Bình Phước, Thủ Đức"*. Bật chế độ "Vệ tinh".
+    2. Quy tắc vàng của Google Maps: **Trên = BẮC, Dưới = NAM, Trái = TÂY, Phải = ĐÔNG.**
+    3. Trượt đến đúng vị trí căn nhà (hoặc dãy nhà) đó. Nhìn xem cái cửa chính/cổng nhà nó đâm ra đường về phía nào trên màn hình điện thoại:
+        - Mặt tiền đâm về bên Trái màn hình ➡️ Nhà Hướng **TÂY**.
+        - Mặt tiền đâm chéo lên góc trên bên Phải ➡️ Nhà Hướng **ĐÔNG BẮC**.
+    """)
+
 elif menu == "🏢 6. TÌNH BÁO DỰ ÁN":
     st.header("🏢 TRUNG TÂM TÌNH BÁO DỰ ÁN & HẠ TẦNG (MIỀN NAM)")
     st.markdown("---")
@@ -1042,17 +1067,29 @@ elif menu == "🏢 6. TÌNH BÁO DỰ ÁN":
     st.markdown("### 🎯 BỘ LỌC DỰ ÁN NHANH")
     colA, colB = st.columns(2)
     with colA:
-        khu_vuc = st.selectbox("📍 Chọn Tỉnh / Thành phố", ["Bình Dương", "TP. Hồ Chí Minh", "Đồng Nai", "Long An", "Tìm tự do (Hạ tầng/Metro)"])
+        khu_vuc = st.selectbox("📍 Chọn Tỉnh / Thành phố", [
+            "TP. Hồ Chí Minh", "Bình Dương", "Đồng Nai", "Long An", 
+            "Bà Rịa - Vũng Tàu", "Bình Phước", "Tây Ninh", "Cần Thơ & Miền Tây", 
+            "Tìm tự do (Hạ tầng/Metro)"
+        ])
         
     with colB:
-        if khu_vuc == "Bình Dương":
-            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Sun Casa Central", "Green City", "Bcons City", "Phú Đông Sky Garden", "Midori Park", "Artisan Park", "Khác (Tự nhập)..."])
-        elif khu_vuc == "TP. Hồ Chí Minh":
-            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Vinhomes Grand Park", "The Global City", "Eaton Park", "Khang Điền (Privia/Classia)", "Zeit River Thủ Thiêm", "Khác (Tự nhập)..."])
+        if khu_vuc == "TP. Hồ Chí Minh":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Vinhomes Central Park (Bình Thạnh)", "Sunwah Pearl (Bình Thạnh)", "City Garden (Bình Thạnh)", "Vinhomes Grand Park (Q9)", "The Global City", "Eaton Park", "Khang Điền (Privia/Classia)", "Zeit River Thủ Thiêm", "Khác (Tự nhập)..."])
+        elif khu_vuc == "Bình Dương":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Sun Casa Central", "Green City", "Bcons City", "Phú Đông Sky Garden", "Midori Park", "Artisan Park", "Astral City", "Khác (Tự nhập)..."])
         elif khu_vuc == "Đồng Nai":
-            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Aqua City", "Izumi City", "Gem Sky World", "Eco Village Saigon River", "Khác (Tự nhập)..."])
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Aqua City", "Izumi City", "Gem Sky World", "Eco Village Saigon River", "SwanBay / SwanPark", "Khác (Tự nhập)..."])
         elif khu_vuc == "Long An":
-            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Waterpoint Nam Long", "Destino Centro", "LA Home", "Khác (Tự nhập)..."])
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Waterpoint Nam Long", "Destino Centro", "LA Home", "T&T City Millennia", "Khác (Tự nhập)..."])
+        elif khu_vuc == "Bà Rịa - Vũng Tàu":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Novaworld Hồ Tràm", "The Maris Vũng Tàu", "Charm Resort Hồ Tràm", "Aria Vũng Tàu", "Khác (Tự nhập)..."])
+        elif khu_vuc == "Bình Phước":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Cát Tường Phú Hưng", "Royal Star Lake", "Amata City", "Khác (Tự nhập)..."])
+        elif khu_vuc == "Tây Ninh":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Vincom Shophouse Tây Ninh", "Golden City", "KĐT Trảng Bàng", "Khác (Tự nhập)..."])
+        elif khu_vuc == "Cần Thơ & Miền Tây":
+            du_an = st.selectbox("🏢 Chọn Dự Án nổi bật", ["Stella Mega City (Cần Thơ)", "KĐT Nam Cần Thơ", "Vincom Shophouse (Các tỉnh)", "Khác (Tự nhập)..."])
         else:
             du_an = "Khác (Tự nhập)..."
             
