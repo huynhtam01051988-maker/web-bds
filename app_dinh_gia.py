@@ -1034,6 +1034,30 @@ Viết theo văn phong nhắn tin Zalo, ngắn gọn, thân thiện, dùng biể
 
 
 
+    
+    st.markdown("---")
+    st.subheader("📖 BÍ KÍP: CÁCH ĐỌC SỔ HỒNG TỪ A-Z (DÀNH CHO LÍNH MỚI)")
+    st.markdown("""
+    Đọc Sổ Hồng (Giấy chứng nhận QSDĐ) là kỹ năng sống còn của Môi giới. Sổ có 4 trang, anh em cần soi kỹ các điểm "Chết người" sau:
+
+    #### 📍 TRANG 1 (Mặt ngoài bìa Hồng): Chữ ký & Người đứng tên
+    - Xem người đứng tên là **Cá nhân, Hai Vợ Chồng hay Hộ Gia Đình**. Nếu ghi "Hộ ông/bà" thì khi công chứng bán nhà phải gom đủ tất cả các thành viên trong Hộ khẩu ký tên (rất dễ rủi ro tranh chấp anh em).
+    
+    #### 📍 TRANG 2 (Linh hồn của cuốn sổ): Soi chi tiết Đất & Nhà
+    - **1. Hình thức sử dụng:** Phải là **"Sử dụng riêng"**. Nếu có dính chữ "Sử dụng chung" thì đó là đất hẻm đi chung, hoặc ác nhất là Sổ Chung (Nhiều nhà chung 1 sổ, mua bán cực kỳ rắc rối).
+    - **2. Mục đích sử dụng:** Phải là **"Đất ở tại đô thị (ODT)"** hoặc Đất ở tại nông thôn (ONT). Nếu ghi "Đất trồng cây lâu năm" (BHK/CLN) mà trên đất có cái nhà to đùng thì nhà đó là Xây dựng trái phép, ngân hàng sẽ không cho vay!
+    - **3. Phần Nhà Ở:** So sánh thực tế. Nếu hiện trạng là nhà 3 Tấm, nhưng trong sổ ghi "Đất trống" hoặc "Nhà cấp 4" => **Nhà chưa hoàn công**. Khách mua sau này sẽ khó xin phép xây dựng hoặc khó thế chấp vay cao.
+
+    #### 📍 TRANG 3 (Sơ đồ bản vẽ): Soi Hình Thể & Quy Hoạch Lộ Giới
+    - **1. La bàn:** Mũi tên chữ B (Bắc) chỉ lên trên. Dùng để xem Hướng nhà (Như đã dạy ở phần trên).
+    - **2. Hình dáng:** Đất vuông vức hoặc Nở hậu thì tốt. Nếu **Tóp Hậu** (Mặt tiền to, đít nhỏ dần) thì phong thủy rất xấu, chủ nhà chắc chắn bị ép giá.
+    - **3. Ranh Lộ Giới (CỰC KỲ QUAN TRỌNG):** Sếp nhìn kỹ vào bản vẽ xem có các **Đường Nét Đứt** cắt ngang qua đất không. Đó là Ranh Quy Hoạch Lộ Giới (Mở rộng đường). Phần đất nằm ngoài nét đứt sẽ bị nhà nước thu hồi phóng đường, không được xây cất kiên cố. Trừ phần đó ra khỏi giá mua!
+
+    #### 📍 TRANG 4 (Biến động pháp lý): Soi Tình trạng cầm cố
+    - Mọi sự thay đổi (Chuyển nhượng, Thế chấp) đều in ở đây. 
+    - Nếu sếp thấy dòng chữ: *"Đã thế chấp quyền sử dụng đất tại Ngân hàng ABC..."* mà bên cạnh **CHƯA CÓ** mộc đỏ ghi *"Đã xóa đăng ký thế chấp"* ➡️ Cuốn sổ này đang nằm trong Két sắt Ngân hàng! Sếp phải nắm để tư vấn khách làm thủ tục Giải Chấp (Lấy tiền khách mua đập vào Bank lấy sổ ra) thì mới công chứng được.
+    """)
+
     st.markdown("---")
     st.subheader("🧭 BÍ KÍP: CÁCH XEM HƯỚNG NHÀ TỪ XA (KHÔNG CẦN TỚI NƠI)")
     st.markdown("""
