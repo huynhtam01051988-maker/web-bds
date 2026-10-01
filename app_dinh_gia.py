@@ -21,13 +21,17 @@ st.set_page_config(page_title="Hệ Thống BĐS - Anh Em Cùng Tiến", layout=
 
 # Cấu hình API Key thật của sếp (Đã chuyển lên trên)
 
-def analyze_images(uploaded_files):
+def analyze_images(uploaded_files, gia_chu_keu=0.0):
+    if gia_chu_keu > 0:
+        gia_rao_str = f"{gia_chu_keu} Tỷ (Còn thương lượng)"
+    else:
+        gia_rao_str = "[Giá Rao hợp lý] (Còn thương lượng)"
     prompt_text = """Đóng vai một Chuyên gia Thẩm định giá Bất Động Sản thực chiến kiêm Siêu Cò lão luyện.
 Hãy soi thật kỹ các bức ảnh này (đặc biệt chú ý nếu có ảnh Sổ Hồng/Sơ đồ thửa đất) và đưa ra 1 Bản Phân Tích Thật Sâu Sắc:
 1. 🏠 KIẾN TRÚC & HIỆN TRẠNG: Đánh giá kết cấu, mức độ xuống cấp. Nếu có Sổ Hồng, hãy đọc chính xác Diện tích công nhận, Bề ngang, Diện tích sàn, Cấp nhà.
 2. 💎 ĐIỂM ĂN TIỀN: Ưu điểm vượt trội (Vị trí, mặt tiền, hẻm, hình dáng đất vuông vức, lợi thế thương mại/dòng tiền nếu đang cho thuê kinh doanh).
 3. 🚨 TỬ HUYỆT (ĐIỂM TRỪ): Bới lông tìm vết! Đọc Sơ đồ Sổ Hồng xem có bị Tóp hậu không? Có bị cắt Ranh Lộ Giới nặng không? Nhìn ảnh thực tế xem có dính cột điện, hố ga, đường đâm không?
-4. 🧭 XÁC ĐỊNH HƯỚNG NHÀ: Nếu ảnh là Sổ Hồng, hãy tìm mũi tên B (Bắc) để xác định xem MẶT TIỀN NHÀ quay về HƯỚNG NÀO (Đông, Tây, Nam, Bắc...).
+4. 🧭 XÁC ĐỊNH HƯỚNG NHÀ: Nếu ảnh là Sổ Hồng, hãy tìm mũi tên B (Bắc) để xác định xem MẶT TIỀN NHÀ quay về HƯỚNG NÀO (Đông, Tây, Nam, Bắc...). KẾT THÚC CÂU LUÔN PHẢI GHI CHÚ: '(⚠️ Lưu ý: Hướng do AI đọc qua ảnh bản vẽ có thể bị lé/lệch, Sếp nên dùng tuyệt chiêu xoay sổ ở Tab 5 để tự nhìn lại bằng mắt người cho chuẩn 100%)'.
 5. 💡 CHIẾN LƯỢC BÁN: Đưa ra lời khuyên thực chiến cho Môi giới.
 6. 📝 BÀI ĐĂNG TIN BÁN NHÀ (VIẾT SẴN): 
 Hãy đóng vai Google Maps để quét quanh đường này xem có Trường Học, Bệnh viện, Siêu thị nào không và ước lượng khoảng cách. VIẾT MỘT BÀI ĐĂNG THEO MẪU SAU (Không tự chế format):
@@ -37,7 +41,7 @@ Hãy đóng vai Google Maps để quét quanh đường này xem có Trường H
 📐 Diện tích: Đất [X]m2 | Ngang [Y]m x Dài [Z]m
 📜 Pháp lý: Sổ hồng riêng
 ✨ Tiện ích: Liệt kê các tiện ích xung quanh. KHÔNG CẦN nêu tên chính xác của trường học hay bệnh viện để tránh sai sót. CHỈ CẦN ghi chung chung nhưng hấp dẫn. Ví dụ: 'Cách Trường học các cấp tầm 500m, cách Bệnh viện và Siêu thị lớn chỉ 1km, xung quanh đầy đủ tiện ích...'
-💰 Giá bán: [Giá Rao hợp lý] (Còn thương lượng)
+💰 Giá bán: {gia_rao_str}
 📞 Liên hệ xem nhà chính chủ: Việt - 0902751297 / Tâm - 0363287054 (Hỗ trợ tư vấn & xem nhà)
 #BanNha[TenQuan] #NhaDatGiaTot #AnhEmCungTien
 
@@ -363,7 +367,7 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                     }
                     if uploaded_files:
                         with st.spinner("🧠 AI đang quét từng chi tiết trong ảnh và Sổ Hồng..."):
-                            ai_analysis = analyze_images(uploaded_files)
+                            ai_analysis = analyze_images(uploaded_files, gia_chu_keu)
                             
                             import re, json
                             
@@ -525,7 +529,10 @@ if menu == "📊 1. AI ĐỊNH GIÁ & RÚT TRÍCH":
                     
                     # 6. BỘ 3 MỨC GIÁ CHIẾN LƯỢC CHO MÔI GIỚI
                     gia_chot = round(gia_tri_chuan, 2)
-                    gia_rao = round(gia_chot * 1.08, 2)  # Tạo khoảng bớt lộc 5%
+                    if gia_chu_keu > 0:
+                        gia_rao = gia_chu_keu
+                    else:
+                        gia_rao = round(gia_chot * 1.08, 2)  # Tạo khoảng bớt lộc 8%
                     gia_gap = round(gia_chot * 0.94, 2)  # Bán gấp cho chủ kẹt tiền
                     
                     # 7. BẢNG TÍNH THỰC THU CHO CHỦ NHÀ (NET CASH)
