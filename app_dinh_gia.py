@@ -686,10 +686,14 @@ elif menu == "🤝 3. CRM & QUẢN LÝ RỔ HÀNG":
     def upload_to_catbox(file_bytes, filename):
         try:
             files = {'reqtype': (None, 'fileupload'), 'fileToUpload': (filename, file_bytes)}
-            res = requests.post('https://catbox.moe/user/api.php', files=files, timeout=60)
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+            res = requests.post('https://catbox.moe/user/api.php', files=files, headers=headers, timeout=60)
             if res.status_code == 200 and "catbox.moe" in res.text:
                 return res.text.strip()
-        except Exception:
+            else:
+                st.error(f"Lỗi upload Catbox (Mã lỗi {res.status_code}): {res.text}")
+        except Exception as e:
+            st.error(f"Lỗi kết nối Catbox: {e}")
             pass
         return None
 
