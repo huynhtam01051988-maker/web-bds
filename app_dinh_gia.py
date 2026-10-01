@@ -891,28 +891,19 @@ Tin nhắn:
                             
                     # 3. Nạp vào AI xào nấu Content
                     with st.spinner("🤖 AI đang nhào nặn Content cực bén (Theo chuẩn Chuyên gia)..."):
-                        prompt = f"""Đóng vai một Siêu Cò Bất Động Sản (Chuyên gia Copywriter BĐS) lão luyện với 10 năm kinh nghiệm thực chiến.
-Nhiệm vụ của bạn là viết 1 bài đăng Facebook/Zalo rao bán nhà ĐỈNH CAO, có khả năng đánh trúng tâm lý khách hàng và tạo sự khan hiếm để chốt sale nhanh. TUYỆT ĐỐI KHÔNG viết kiểu liệt kê thông số nhàm chán đơn sơ!
+                        prompt = f"""Đóng vai một Môi giới Bất động sản lão luyện. Hãy viết một BÀI ĐĂNG TIN BÁN NHÀ VIP chuẩn format của team.
+BẠN HÃY ĐÓNG VAI GOOGLE MAPS: Tự động phân tích vị trí '{diachi_che}' để kể tên các Tiện ích (Trường học, Bệnh viện, Siêu thị...) nằm trong bán kính 1-2km (chỉ ghi ước lượng khoảng cách, KHÔNG CẦN CHÍNH XÁC TÊN TRƯỜNG để tránh rủi ro sai lệch).
 
-Hãy áp dụng công thức viết bài AIDA (Chú ý - Thích thú - Khao khát - Hành động):
-
-1. [TIÊU ĐỀ IN HOA]: Giật tít cực mạnh, chứa từ khóa thôi miên (SIÊU PHẨM, GIẢM CHÀO, CHỦ NGỘP, HÀNG HIẾM, HOA HẬU, DÒNG TIỀN KHỦNG...). Tiêu đề phải nêu bật được cái "ngon" nhất của căn nhà.
-2. [ĐOẠN MỞ ĐẦU]: 2-3 câu khơi gợi nhu cầu hoặc kể lý do bán (VD: "Tìm đâu ra nhà mặt tiền kinh doanh dòng tiền sẵn chỉ nhỉnh 8 tỷ?", "Chủ ngộp bank hạ chào bán gấp cứu xưởng...", "Hàng hiếm bao năm mới có người nhả...").
-3. [THÔNG SỐ VÀNG]: Liệt kê thông số thật chuyên nghiệp, rõ ràng bằng emoji (📍, 📐, 🏠, 📕, 💰). Lồng ghép lời khen vào thông số (VD: Sổ vuông vức như tờ A4, Hẻm xe hơi ngủ trong nhà...).
-4. [PHÂN TÍCH GIÁ TRỊ]: 1 đoạn ngắn phân tích tại sao căn nhà này đáng xuống tiền ngay (Mua ở thì sướng, kinh doanh thì đắc địa, khu dân trí cao an ninh, hiếm nhà bán...).
-5. [CHỐT SALE CỰC MẠNH]: Tạo sự khan hiếm (Chỉ còn 1 căn duy nhất, chủ đang rất xoắn bán, giá chốt bất ngờ cho khách cầm tiền mặt...). Kêu gọi hành động: "Gọi ngay [Số điện thoại của bạn] để xem nhà trực tiếp!".
-
-Thông số căn nhà cần viết:
-- Vị trí (chỉ dùng địa chỉ này, không chế thêm): {diachi_che}
-- Ưu điểm/Đặc điểm nổi bật: {dac_diem}
-- Kết cấu: {ket_cau}
-- Diện tích đất: {dientich} (DT Xây dựng/Sàn: {dtsan})
-- Pháp lý & Giá bán: {phaply_gia}
-
-Yêu cầu thêm:
-- Viết thật tự nhiên, dùng từ lóng của dân sale BĐS (ngộp, chốt, nhỉnh, hạ chào, khách thiện chí, quay đầu...).
-- Trình bày ngắt quãng, xuống dòng thoáng mắt để khách dễ đọc trên điện thoại. 
-- Không dài lê thê, súc tích và đấm thẳng vào tâm lý người mua!
+BẮT BUỘC DÙNG FORMAT SAU (Điền dữ liệu thực tế vào):
+🔥 BÁN NHÀ [Mặt Tiền/Hẻm] TẠI {diachi_che}
+📍 Vị trí: {diachi_che}
+🏠 Đặc điểm: {dac_diem}
+⚙️ Kết cấu: {ket_cau}
+📐 Diện tích: {dientich} (DT Sàn: {dtsan})
+📜 Pháp lý & Giá: {phaply_gia}
+✨ Tiện ích xung quanh: [Liệt kê tiện ích tự động quét + Khoảng cách ước lượng]
+📞 Liên hệ xem nhà chính chủ: Việt - 0902751297 / Tâm - 0363287054 (Hỗ trợ tư vấn & xem nhà)
+#BanNha #NhaDatGiaTot #AnhEmCungTien #BatDongSanHCM
 """
                         try:
                             response = client.models.generate_content(model="gemini-3.5-flash", contents=prompt)
