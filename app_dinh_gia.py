@@ -36,7 +36,7 @@ Hãy soi thật kỹ các bức ảnh này (đặc biệt chú ý nếu có ản
 6. 📝 BÀI ĐĂNG TIN BÁN NHÀ (VIẾT SẴN): 
 Hãy đóng vai Google Maps để quét quanh đường này xem có Trường Học, Bệnh viện, Siêu thị nào không và ước lượng khoảng cách. VIẾT MỘT BÀI ĐĂNG THEO MẪU SAU (Không tự chế format):
 🔥 BÁN NHÀ [Hẻm/Mặt tiền] ĐƯỜNG [Tên đường] - [Quận/Huyện]
-📍 Vị trí: [Địa chỉ cụ thể, Phường, Quận]
+📍 Vị trí: [CHỈ GHI TÊN ĐƯỜNG, PHƯỜNG, QUẬN. TUYỆT ĐỐI GIẤU SỐ NHÀ CỤ THỂ để bảo mật]
 🏠 Thiết kế: [Kết cấu] (Hướng: [Hướng nhà tìm được])
 📐 Diện tích: Đất [X]m2 | Ngang [Y]m x Dài [Z]m
 📜 Pháp lý: Sổ hồng riêng
@@ -891,23 +891,37 @@ Tin nhắn:
                             
                     # 3. Nạp vào AI xào nấu Content
                     with st.spinner("🤖 AI đang nhào nặn Content cực bén (Theo chuẩn Chuyên gia)..."):
-                        prompt = f"""Đóng vai một Môi giới Bất động sản lão luyện. Hãy viết một BÀI ĐĂNG TIN BÁN NHÀ VIP chuẩn format của team.
+                        prompt = f"""Đóng vai một Môi giới Bất động sản lão luyện. Hãy TỰ ĐỘNG PHÂN TÍCH HÌNH ẢNH (sổ hồng, nhà thực tế) để rút trích các thông số còn thiếu và viết BÀI ĐĂNG TIN BÁN NHÀ VIP chuẩn format của team.
 BẠN HÃY ĐÓNG VAI GOOGLE MAPS: Tự động phân tích vị trí '{diachi_che}' để kể tên các Tiện ích (Trường học, Bệnh viện, Siêu thị...) nằm trong bán kính 1-2km (chỉ ghi ước lượng khoảng cách, KHÔNG CẦN CHÍNH XÁC TÊN TRƯỜNG để tránh rủi ro sai lệch).
 
+HƯỚNG DẪN RÚT TRÍCH:
+- Các thông số mà Môi giới KHÔNG tự điền (như {dac_diem}, {ket_cau}, v.v.), bạn HÃY TỰ ĐỘNG NHÌN ẢNH VÀ ĐIỀN VÀO (ví dụ: tự xem hướng nhà, kết cấu, hẻm xe hơi).
+- Diện tích và Giá bán bắt buộc lấy theo Môi giới cung cấp:
+  + Diện tích: {dientich}
+  + Giá bán: {phaply_gia}
+
 BẮT BUỘC DÙNG FORMAT SAU (Điền dữ liệu thực tế vào):
-🔥 BÁN NHÀ [Mặt Tiền/Hẻm] TẠI {diachi_che}
+🔥 BÁN NHÀ TẠI {diachi_che.upper()}
 📍 Vị trí: {diachi_che}
-🏠 Đặc điểm: {dac_diem}
-⚙️ Kết cấu: {ket_cau}
+🏠 Kết cấu & Đặc điểm: [Tự phân tích từ ảnh + {ket_cau} + {dac_diem}]
 📐 Diện tích: {dientich} (DT Sàn: {dtsan})
-📜 Pháp lý & Giá: {phaply_gia}
+📜 Pháp lý & Giá: Sổ hồng riêng - {phaply_gia}
 ✨ Tiện ích xung quanh: [Liệt kê tiện ích tự động quét + Khoảng cách ước lượng]
 📞 Liên hệ xem nhà chính chủ: Việt - 0902751297 / Tâm - 0363287054 (Hỗ trợ tư vấn & xem nhà)
 #BanNha #NhaDatGiaTot #AnhEmCungTien #BatDongSanHCM
 """
                         try:
-                            response = client.models.generate_content(model="gemini-3.5-flash", contents=prompt)
-                            generated_text = response.text
+                            models_to_try = ["gemini-3.6-flash", "gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite"]
+                            generated_text = ""
+                            for m in models_to_try:
+                                try:
+                                    response = client.models.generate_content(model=m, contents=prompt)
+                                    generated_text = response.text
+                                    break
+                                except:
+                                    continue
+                            if not generated_text:
+                                raise Exception("All models failed")
                         except:
                             generated_text = f"BÁN NHÀ TẠI {diachi_che.upper()}\n\n📍 Vị trí: {diachi_che}\n🏠 Kết cấu: {ket_cau}\n📐 Diện tích: {dientich}\n📄 Giá: {phaply_gia}"
                     
