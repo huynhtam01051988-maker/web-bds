@@ -26,8 +26,20 @@ def analyze_images(uploaded_files):
 Hãy soi thật kỹ các bức ảnh này (đặc biệt chú ý nếu có ảnh Sổ Hồng/Sơ đồ thửa đất) và đưa ra 1 Bản Phân Tích Thật Sâu Sắc:
 1. 🏠 KIẾN TRÚC & HIỆN TRẠNG: Đánh giá kết cấu, mức độ xuống cấp. Nếu có Sổ Hồng, hãy đọc chính xác Diện tích công nhận, Bề ngang, Diện tích sàn, Cấp nhà.
 2. 💎 ĐIỂM ĂN TIỀN: Ưu điểm vượt trội (Vị trí, mặt tiền, hẻm, hình dáng đất vuông vức, lợi thế thương mại/dòng tiền nếu đang cho thuê kinh doanh).
-3. 🚨 TỬ HUYỆT (ĐIỂM TRỪ): Bới lông tìm vết! Đọc Sơ đồ Sổ Hồng xem có bị Tóp hậu không? Có bị cắt Ranh Lộ Giới nặng không? Nhìn ảnh thực tế xem có dính cột điện, hố ga, đường đâm, dây điện chằng chịt không?
-4. 💡 CHIẾN LƯỢC BÁN: Đưa ra lời khuyên thực chiến cho Môi giới tư vấn chủ nhà nhận ký gửi.
+3. 🚨 TỬ HUYỆT (ĐIỂM TRỪ): Bới lông tìm vết! Đọc Sơ đồ Sổ Hồng xem có bị Tóp hậu không? Có bị cắt Ranh Lộ Giới nặng không? Nhìn ảnh thực tế xem có dính cột điện, hố ga, đường đâm không?
+4. 🧭 XÁC ĐỊNH HƯỚNG NHÀ: Nếu ảnh là Sổ Hồng, hãy tìm mũi tên B (Bắc) để xác định xem MẶT TIỀN NHÀ quay về HƯỚNG NÀO (Đông, Tây, Nam, Bắc...).
+5. 💡 CHIẾN LƯỢC BÁN: Đưa ra lời khuyên thực chiến cho Môi giới.
+6. 📝 BÀI ĐĂNG TIN BÁN NHÀ (VIẾT SẴN): 
+Hãy đóng vai Google Maps để quét quanh đường này xem có Trường Học, Bệnh viện, Siêu thị nào không và ước lượng khoảng cách. VIẾT MỘT BÀI ĐĂNG THEO MẪU SAU (Không tự chế format):
+🔥 BÁN NHÀ [Hẻm/Mặt tiền] ĐƯỜNG [Tên đường] - [Quận/Huyện]
+📍 Vị trí: [Địa chỉ cụ thể, Phường, Quận]
+🏠 Thiết kế: [Kết cấu] (Hướng: [Hướng nhà tìm được])
+📐 Diện tích: Đất [X]m2 | Ngang [Y]m x Dài [Z]m
+📜 Pháp lý: Sổ hồng riêng
+✨ Tiện ích: Liệt kê các tiện ích xung quanh. KHÔNG CẦN nêu tên chính xác của trường học hay bệnh viện để tránh sai sót. CHỈ CẦN ghi chung chung nhưng hấp dẫn. Ví dụ: 'Cách Trường học các cấp tầm 500m, cách Bệnh viện và Siêu thị lớn chỉ 1km, xung quanh đầy đủ tiện ích...'
+💰 Giá bán: [Giá Rao hợp lý] (Còn thương lượng)
+📞 Liên hệ xem nhà chính chủ: Việt - 0902751297 / Tâm - 0363287054 (Hỗ trợ tư vấn & xem nhà)
+#BanNha[TenQuan] #NhaDatGiaTot #AnhEmCungTien
 
 QUAN TRỌNG NHẤT: Bắt buộc ở cuối cùng bài phân tích, bạn phải xuất ra một khối dữ liệu JSON y hệt định dạng sau để phần mềm tự động lấy số liệu tính toán (chỉ xuất JSON, đặt trong ```json ... ```):
 ```json
